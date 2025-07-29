@@ -8,7 +8,6 @@ import { User } from '../model/user.interface';
 })
 export class AuthService {
   private http = inject(HttpClient);
-  private baseUrl = 'https://node-express-conduit.appspot.com/api';
 
   private currentUserSignal = signal<User | null>(null);
   public currentUser = this.currentUserSignal.asReadonly();
@@ -21,7 +20,7 @@ export class AuthService {
     password: string;
   }): Observable<{ user: User }> {
     return this.http
-      .post<{ user: User }>(this.baseUrl + '/users', {
+      .post<{ user: User }>('/users', {
         user,
       })
       .pipe(tap(({ user }) => this.setToken(user)));
@@ -30,7 +29,7 @@ export class AuthService {
   //login existing user
   login(user: { email: string; password: string }): Observable<{ user: User }> {
     return this.http
-      .post<{ user: User }>(this.baseUrl + '/users/login', {
+      .post<{ user: User }>('/users/login', {
         user,
       })
       .pipe(tap(({ user }) => this.setToken(user)));
