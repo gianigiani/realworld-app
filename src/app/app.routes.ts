@@ -18,4 +18,10 @@ export const routes: Routes = [
     loadComponent: () => import('../pages/login/login').then((m) => m.Login),
     canActivate: [() => !inject(AuthService).isAuthenticated()],
   },
+  {
+    path: 'settings',
+    loadComponent: () =>
+      import('../pages/settings/settings').then((m) => m.Settings),
+    canActivate: [() => inject(AuthService).isAuthenticated],
+  },
 ];
