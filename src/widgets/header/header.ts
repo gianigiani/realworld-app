@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { AuthService } from '../../features/auth/api/auth.service';
 import { AppAuthDirective } from '../../features/auth/app-auth';
 
@@ -10,6 +10,6 @@ import { AppAuthDirective } from '../../features/auth/app-auth';
 })
 export class Header {
   authService = inject(AuthService);
-
-  currentUser = signal({ username: 'Guest', image: '' });
+  isAuthenticated = this.authService.isAuthenticated();
+  currentUser = this.authService.currentUser;
 }
