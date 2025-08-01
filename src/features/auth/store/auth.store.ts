@@ -41,6 +41,7 @@ export const authStore = signalStore(
         currentUser: null,
         isAuthenticated: false,
       });
+      localStorage.removeItem('token');
     },
   })),
 );
