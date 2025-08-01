@@ -2,50 +2,52 @@
   <div class="container">
     <a class="navbar-brand" href="/">conduit</a>
 
-    <ul *appAuth="true" class="nav navbar-nav pull-xs-right">
-      <li class="nav-item">
-        <!-- Add "active" class when you're on that page" -->
-        <a class="nav-link active" href="/">Home</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/editor">
-          <i class="ion-compose"></i>&nbsp;New Article
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/settings">
-          <i class="ion-gear-a"></i>&nbsp;Settings
-        </a>
-      </li>
-
-      @if (store.currentUser() && store.currentUser()?.username) {
+    @if (store.isAuthenticated()) {
+      <ul class="nav navbar-nav pull-xs-right">
         <li class="nav-item">
-          <a
-            class="nav-link"
-            href="/profile/{{ store.currentUser()?.username }}"
-          >
-            <img
-              alt=""
-              src="{{ store.currentUser()?.image }}"
-              class="user-pic"
-            />
-            {{ store.currentUser()?.username }}
+          <!-- Add "active" class when you're on that page" -->
+          <a class="nav-link active" href="/">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/editor">
+            <i class="ion-compose"></i>&nbsp;New Article
           </a>
         </li>
-      }
-    </ul>
+        <li class="nav-item">
+          <a class="nav-link" href="/settings">
+            <i class="ion-gear-a"></i>&nbsp;Settings
+          </a>
+        </li>
 
-    <ul *appAuth="false" class="nav navbar-nav pull-xs-right">
-      <li class="nav-item">
-        <!-- Add "active" class when you're on that page" -->
-        <a class="nav-link active" href="/">Home</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/login">Sign in</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/register">Sign up</a>
-      </li>
-    </ul>
+        @if (store.currentUser() && store.currentUser()?.username) {
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              href="/profile/{{ store.currentUser()?.username }}"
+            >
+              <img
+                alt=""
+                src="{{ store.currentUser()?.image }}"
+                class="user-pic"
+              />
+              {{ store.currentUser()?.username }}
+            </a>
+          </li>
+        }
+      </ul>
+    } @else {
+      <ul class="nav navbar-nav pull-xs-right">
+        <li class="nav-item">
+          <!-- Add "active" class when you're on that page" -->
+          <a class="nav-link active" href="/">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/login">Sign in</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/register">Sign up</a>
+        </li>
+      </ul>
+    }
   </div>
 </nav>

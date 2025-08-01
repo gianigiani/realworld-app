@@ -1,11 +1,10 @@
 import { Component, inject } from '@angular/core';
-import { AppAuthDirective } from '../../features/auth/app-auth';
 import { AuthService } from '../../features/auth/service/auth.service';
 import { authStore } from '../../features/auth/store/auth.store';
 
 @Component({
   selector: 'app-header',
-  imports: [AppAuthDirective],
+  imports: [],
   templateUrl: './header.html',
   styleUrl: './header.scss',
 })
