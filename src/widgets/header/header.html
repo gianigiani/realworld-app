@@ -17,11 +17,19 @@
           <i class="ion-gear-a"></i>&nbsp;Settings
         </a>
       </li>
-      @if (currentUser() && currentUser()?.username) {
+
+      @if (store.currentUser() && store.currentUser()?.username) {
         <li class="nav-item">
-          <a class="nav-link" href="/profile/{{ currentUser()?.username }}">
-            <img alt="" src="{{ currentUser()?.image }}" class="user-pic" />
-            {{ currentUser()?.username }}
+          <a
+            class="nav-link"
+            href="/profile/{{ store.currentUser()?.username }}"
+          >
+            <img
+              alt=""
+              src="{{ store.currentUser()?.image }}"
+              class="user-pic"
+            />
+            {{ store.currentUser()?.username }}
           </a>
         </li>
       }

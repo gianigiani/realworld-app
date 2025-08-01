@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
-import { AuthService } from '../../features/auth/api/auth.service';
 import { AppAuthDirective } from '../../features/auth/app-auth';
+import { AuthService } from '../../features/auth/service/auth.service';
+import { authStore } from '../../features/auth/store/auth.store';
 
 @Component({
   selector: 'app-header',
@@ -10,6 +11,6 @@ import { AppAuthDirective } from '../../features/auth/app-auth';
 })
 export class Header {
   authService = inject(AuthService);
-  isAuthenticated = this.authService.isAuthenticated();
-  currentUser = this.authService.currentUser;
+
+  store = inject(authStore);
 }

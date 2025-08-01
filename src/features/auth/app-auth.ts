@@ -6,7 +6,7 @@ import {
   TemplateRef,
   ViewContainerRef,
 } from '@angular/core';
-import { AuthService } from './api/auth.service';
+import { authStore } from './store/auth.store';
 
 @Directive({
   selector: '[appAuth]',
@@ -14,14 +14,14 @@ import { AuthService } from './api/auth.service';
 export class AppAuthDirective<T> {
   private templateRef = inject(TemplateRef<T>);
   private viewContainer = inject(ViewContainerRef);
-  private authService = inject(AuthService);
+  store = inject(authStore);
 
   public appAuth = input<boolean>(false);
   private hasView = false;
 
   constructor() {
     effect(() => {
-      const isAuthenticated = this.authService.isAuthenticated();
+      const isAuthenticated = this.store.isAuthenticated();
       const shouldShow = isAuthenticated === this.appAuth();
 
       if (shouldShow && !this.hasView) {
