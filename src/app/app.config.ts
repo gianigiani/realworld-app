@@ -13,9 +13,9 @@ import {
   withInterceptors,
 } from '@angular/common/http';
 import { EMPTY } from 'rxjs';
-import { baseUrlInterceptor } from '../features/auth/api/api.interceptor';
-import { AuthService } from '../features/auth/api/auth.service';
-import { tokenInterceptor } from '../features/auth/api/token.interceptor';
+import { baseUrlInterceptor } from '../features/auth/interceptors/api.interceptor';
+import { tokenInterceptor } from '../features/auth/interceptors/token.interceptor';
+import { AuthService } from '../features/auth/service/auth.service';
 import { routes } from './app.routes';
 
 export function initAuth(authService: AuthService) {

@@ -7,7 +7,7 @@ export interface RegisterUser {
 export interface User {
   email: string;
   token: string;
-  username?: string;
-  bio?: string;
-  image?: string;
+  username: string;
+  bio: string;
+  image: string;
 }
