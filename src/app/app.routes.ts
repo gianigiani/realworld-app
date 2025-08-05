@@ -1,6 +1,5 @@
-import { inject } from '@angular/core';
 import { Routes } from '@angular/router';
-import { authStore } from '../features/auth/store/auth.store';
+import { authGuard } from '../features/auth/guard/auth.guard';
 
 export const routes: Routes = [
   {
@@ -11,23 +10,32 @@ export const routes: Routes = [
     path: 'register',
     loadComponent: () =>
       import('../pages/register/register').then((m) => m.Register),
-    canActivate: [() => !inject(authStore).isAuthenticated()],
   },
   {
     path: 'login',
     loadComponent: () => import('../pages/login/login').then((m) => m.Login),
-    canActivate: [() => !inject(authStore).isAuthenticated()],
   },
   {
     path: 'settings',
     loadComponent: () =>
       import('../pages/settings/settings').then((m) => m.Settings),
-    canActivate: [() => inject(authStore).isAuthenticated()],
+    canActivate: [authGuard],
   },
   {
     path: 'profile/:username',
     loadComponent: () =>
       import('../pages/profile/profile').then((m) => m.Profile),
-    canActivate: [() => inject(authStore).isAuthenticated()],
+    canActivate: [authGuard],
+  },
+  {
+    path: 'article/:slug',
+    loadComponent: () =>
+      import('../pages/article/article').then((m) => m.Article),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'editor',
+    loadComponent: () => import('../pages/editor/editor').then((m) => m.Editor),
+    canActivate: [authGuard],
   },
 ];
