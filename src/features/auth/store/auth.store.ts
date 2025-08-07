@@ -8,12 +8,10 @@ import {
 import { User } from '../model/user.interface';
 
 interface AuthState {
-  isAuthenticated: boolean;
   currentUser: User | null;
 }
 
 const initialState: AuthState = {
-  isAuthenticated: false,
   currentUser: null as User | null,
 };
 
@@ -27,7 +25,6 @@ export const authStore = signalStore(
     setUser(user: User | null) {
       patchState(store, {
         currentUser: user,
-        isAuthenticated: !!user,
       });
       if (user) {
         localStorage.setItem('token', user.token);
@@ -39,7 +36,6 @@ export const authStore = signalStore(
     logout() {
       patchState(store, {
         currentUser: null,
-        isAuthenticated: false,
       });
       localStorage.removeItem('token');
     },
