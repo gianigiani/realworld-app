@@ -8,10 +8,11 @@ import {
 import { Router } from '@angular/router';
 import { AuthForm } from '../../features/auth/model/authForm.interface';
 import { AuthService } from '../../features/auth/service/auth.service';
+import { LoadingSpinner } from '../../shared/loading-spinner/loading-spinner';
 
 @Component({
   selector: 'app-register',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, LoadingSpinner],
   templateUrl: './register.html',
   styleUrl: './register.scss',
 })
@@ -20,6 +21,7 @@ export class Register {
   authService = inject(AuthService);
   router = inject(Router);
   errorMessage = signal('');
+  isLoading = signal(false);
 
   constructor() {
     this.authForm = new FormGroup<AuthForm>({
@@ -39,6 +41,7 @@ export class Register {
   }
 
   onSubmit() {
+    this.isLoading.set(true);
     this.authService
       .register({
         username: this.authForm.value.username!,
@@ -48,10 +51,12 @@ export class Register {
       .subscribe({
         next: (response) => {
           console.log(response);
+          this.isLoading.set(false);
           this.router.navigate(['/']);
         },
 
         error: (error) => {
+          this.isLoading.set(false);
           if (error.error && error.error.message) {
             this.errorMessage = error.error.message;
           } else {

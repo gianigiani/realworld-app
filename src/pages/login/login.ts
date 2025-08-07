@@ -8,10 +8,11 @@ import {
 import { Router } from '@angular/router';
 import { AuthForm } from '../../features/auth/model/authForm.interface';
 import { AuthService } from '../../features/auth/service/auth.service';
+import { LoadingSpinner } from '../../shared/loading-spinner/loading-spinner';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, LoadingSpinner],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
@@ -20,6 +21,7 @@ export class Login {
   authService = inject(AuthService);
   router = inject(Router);
   errorMessage = signal('');
+  isLoading = signal(false);
 
   constructor() {
     this.authForm = new FormGroup<AuthForm>({
@@ -35,6 +37,7 @@ export class Login {
   }
 
   onSubmit() {
+    this.isLoading.set(true);
     this.authService
       .login({
         email: this.authForm.value.email!,
@@ -42,9 +45,11 @@ export class Login {
       })
       .subscribe({
         next: () => {
+          this.isLoading.set(false);
           this.router.navigate(['/']);
         },
         error: (error) => {
+          this.isLoading.set(false);
           if (error.error && error.error.message) {
             this.errorMessage.set(error.error.message);
           } else {

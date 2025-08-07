@@ -13,31 +13,37 @@
           </ul>
         }
 
-        <form [formGroup]="authForm" (ngSubmit)="onSubmit()">
-          <fieldset class="form-group">
-            <input
-              formControlName="email"
-              class="form-control form-control-lg"
-              type="text"
-              placeholder="Email"
-            />
-          </fieldset>
-          <fieldset class="form-group">
-            <input
-              formControlName="password"
-              class="form-control form-control-lg"
-              type="password"
-              placeholder="Password"
-            />
-          </fieldset>
-          <button
-            type="submit"
-            [disabled]="!authForm.valid"
-            class="btn btn-lg btn-primary pull-xs-right"
-          >
-            Sign in
-          </button>
-        </form>
+        @if (isLoading()) {
+          <div class="text-xs-center">
+            <app-loading-spinner></app-loading-spinner>
+          </div>
+        } @else {
+          <form [formGroup]="authForm" (ngSubmit)="onSubmit()">
+            <fieldset class="form-group">
+              <input
+                formControlName="email"
+                class="form-control form-control-lg"
+                type="text"
+                placeholder="Email"
+              />
+            </fieldset>
+            <fieldset class="form-group">
+              <input
+                formControlName="password"
+                class="form-control form-control-lg"
+                type="password"
+                placeholder="Password"
+              />
+            </fieldset>
+            <button
+              type="submit"
+              [disabled]="!authForm.valid"
+              class="btn btn-lg btn-primary pull-xs-right"
+            >
+              Sign in
+            </button>
+          </form>
+        }
       </div>
     </div>
   </div>
