@@ -11,11 +11,25 @@
       <div class="col-md-9">
         <div class="feed-toggle">
           <ul class="nav nav-pills outline-active">
+            @if (store.isAuthenticated()) {
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  href="#"
+                  [ngClass]="{ active: this.type() !== 'global' }"
+                  (click)="populateFeedArticles()"
+                  >Your Feed</a
+                >
+              </li>
+            }
             <li class="nav-item">
-              <a class="nav-link" href="">Your Feed</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link active" href="">Global Feed</a>
+              <a
+                class="nav-link"
+                href="#"
+                [ngClass]="{ active: this.type() === 'global' }"
+                (click)="populateGlobalArticles()"
+                >Global Feed</a
+              >
             </li>
           </ul>
         </div>
@@ -52,6 +66,8 @@
               </ul>
             </a>
           </div>
+        } @empty {
+          <div class="article-preview">There are no articles here yet</div>
         }
 
         <ul class="pagination">
@@ -75,7 +91,7 @@
               </div>
             }
           } @else {
-            <div>No tags are here... yet.</div>
+            <div>There are no tags are here yet</div>
           }
         </div>
       </div>

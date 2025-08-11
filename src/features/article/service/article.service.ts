@@ -17,4 +17,13 @@ export class ArticleService {
       }),
     );
   }
+
+  getFeedArticles(): Observable<Article[]> {
+    return this.http.get<{ articles: Article[] }>('/articles/feed').pipe(
+      map((data) => data.articles),
+      catchError((error) => {
+        return throwError(() => error);
+      }),
+    );
+  }
 }
