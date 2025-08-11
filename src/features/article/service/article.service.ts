@@ -26,4 +26,13 @@ export class ArticleService {
       }),
     );
   }
+
+  getTagArticle(slug: string): Observable<Article> {
+    return this.http.get<{ article: Article }>(`/articles/${slug}`).pipe(
+      map((data) => data.article),
+      catchError((error) => {
+        return throwError(() => error);
+      }),
+    );
+  }
 }

@@ -1,6 +1,6 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { Component, effect, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { Article } from '../../features/article/model/article.model';
 import { ArticleService } from '../../features/article/service/article.service';
 import { authStore } from '../../features/auth/store/auth.store';
@@ -8,7 +8,7 @@ import { TagsService } from '../../features/tags/service/tags.service';
 
 @Component({
   selector: 'app-home',
-  imports: [DatePipe, CommonModule],
+  imports: [CommonModule, RouterModule, DatePipe],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })

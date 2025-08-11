@@ -53,7 +53,7 @@
                 {{ article.favoritesCount }}
               </button>
             </div>
-            <a href="/article/:slug" class="preview-link">
+            <a [routerLink]="['/article', article.slug]" class="preview-link">
               <h1>{{ article.title }}</h1>
               <p>{{ article.description }}</p>
               <span>Read more...</span>
@@ -87,7 +87,11 @@
           @if (tags()) {
             @for (tag of tags(); track tag) {
               <div class="tag-list">
-                <a href="" class="tag-pill tag-default">{{ tag }}</a>
+                <a
+                  [routerLink]="['/article', tag]"
+                  class="tag-pill tag-default"
+                  >{{ tag }}</a
+                >
               </div>
             }
           } @else {
