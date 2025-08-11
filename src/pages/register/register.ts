@@ -20,7 +20,6 @@ export class Register {
   authForm: FormGroup<AuthForm>;
   authService = inject(AuthService);
   router = inject(Router);
-  errorMessage = signal('');
   isLoading = signal(false);
 
   constructor() {
@@ -49,20 +48,14 @@ export class Register {
         password: this.authForm.value.password!,
       })
       .subscribe({
-        next: (response) => {
-          console.log(response);
+        next: () => {
           this.isLoading.set(false);
           this.router.navigate(['/']);
         },
 
         error: (error) => {
           this.isLoading.set(false);
-          if (error.error && error.error.message) {
-            this.errorMessage = error.error.message;
-          } else {
-            this.errorMessage.set('Registration failed. Please try again.');
-          }
-          console.error('Registration failed:', error);
+          this.authService.errorMessage.set(error.error.message);
         },
       });
   }

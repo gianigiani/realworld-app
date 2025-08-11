@@ -1,7 +1,7 @@
-import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, Observable, of, shareReplay, tap } from 'rxjs';
+import { catchError, Observable, shareReplay, tap, throwError } from 'rxjs';
 import { UpdateUser } from '../model/settingsForm.interface';
 import { User } from '../model/user.interface';
 import { authStore } from '../store/auth.store';
@@ -16,6 +16,8 @@ export class AuthService {
   private store = inject(authStore);
   private tokenService = inject(TokenService);
 
+  errorMessage = signal('');
+
   //register new user
   register(user: {
     username: string;
@@ -26,7 +28,10 @@ export class AuthService {
       .post<{ user: User }>('/users', {
         user,
       })
-      .pipe(tap(({ user }) => this.setToken(user)));
+      .pipe(
+        tap(({ user }) => this.setToken(user)),
+        catchError(this.handleError.bind(this)),
+      );
   }
 
   //login existing user
@@ -35,7 +40,10 @@ export class AuthService {
       .post<{ user: User }>('/users/login', {
         user,
       })
-      .pipe(tap(({ user }) => this.setToken(user)));
+      .pipe(
+        tap(({ user }) => this.setToken(user)),
+        catchError(this.handleError.bind(this)),
+      );
   }
 
   //update user settings
@@ -50,7 +58,7 @@ export class AuthService {
       .put<{ user: UpdateUser }>('/user', {
         user,
       })
-      .pipe(tap(({ user }) => this.setToken(user)));
+      .pipe(tap(({ user }) => this.setToken(user))); //TODO: error handling
   }
 
   //set user token
@@ -60,24 +68,19 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    return this.tokenService.get();
+    const _token = this.tokenService.get();
+    if (_token && this.isTokenExpired(_token)) {
+      return null;
+    }
+    return _token;
   }
-
-  // isTokenValid(token: string): boolean {
-  //   try {
-  //     const payload = JSON.parse(atob(token.split('.')[1]));
-  //     const expiration = payload.exp;
-  //     return typeof expiration === 'number' && Date.now() < expiration * 1000;
-  //   } catch (error) {
-  //     console.error('Invalid token format:', error);
-  //     return false;
-  //   }
-  // }
 
   isTokenExpired(token: string): boolean {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       const expiration = payload.exp;
+      // console.log(expiration);
+
       return typeof expiration === 'number' && Date.now() > expiration * 1000;
     } catch {
       return true;
@@ -89,12 +92,7 @@ export class AuthService {
       tap({
         next: ({ user }) => this.setToken(user),
       }),
-      catchError((error) => {
-        console.error('Failed to fetch current user:', error);
-
-        this.logout();
-        return of(null);
-      }),
+      //TODO: error handling
       shareReplay(1),
     );
   }
@@ -103,5 +101,20 @@ export class AuthService {
     this.tokenService.remove();
     this.store.logout();
     this.router.navigate(['/']);
+  }
+
+  private handleError(errorRes: HttpErrorResponse) {
+    let errorMsg = 'Operation failed. Please try again.';
+
+    if (!errorRes.error || !errorRes.error.errors.body) {
+      return throwError(() => errorMsg);
+    }
+
+    if (errorRes.error && errorRes.error.errors.body[0]) {
+      errorMsg = errorRes.error.errors.body[0];
+    }
+    this.errorMessage.set(errorMsg);
+
+    return throwError(() => errorRes);
   }
 }

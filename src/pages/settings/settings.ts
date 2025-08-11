@@ -17,7 +17,7 @@ import { authStore } from '../../features/auth/store/auth.store';
   styleUrl: './settings.scss',
 })
 export class Settings {
-  private authService = inject(AuthService);
+  authService = inject(AuthService);
   store = inject(authStore);
   router = inject(Router);
 
@@ -49,7 +49,7 @@ export class Settings {
     });
   }
 
-  logout(): void {
+  onLogout(): void {
     this.authService.logout();
   }
 
@@ -67,12 +67,7 @@ export class Settings {
           this.router.navigate(['/profile/', user.username]);
         },
         error: (error) => {
-          if (error.error && error.error.message) {
-            this.errorMessage.set(error.error.message);
-          } else {
-            this.errorMessage.set('Login failed. Please try again.');
-          }
-          console.error('Login failed:', error);
+          this.authService.errorMessage.set(error.error.message);
         },
       });
   }

@@ -20,7 +20,6 @@ export class Login {
   authForm: FormGroup<AuthForm>;
   authService = inject(AuthService);
   router = inject(Router);
-  errorMessage = signal('');
   isLoading = signal(false);
 
   constructor() {
@@ -50,12 +49,7 @@ export class Login {
         },
         error: (error) => {
           this.isLoading.set(false);
-          if (error.error && error.error.message) {
-            this.errorMessage.set(error.error.message);
-          } else {
-            this.errorMessage.set('Login failed. Please try again.');
-          }
-          console.error('Login failed:', error);
+          this.authService.errorMessage.set(error.error.message);
         },
       });
   }
