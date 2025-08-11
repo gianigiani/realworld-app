@@ -1,10 +1,11 @@
 import { Component, inject } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { AuthService } from '../../features/auth/service/auth.service';
 import { authStore } from '../../features/auth/store/auth.store';
 
 @Component({
   selector: 'app-header',
-  imports: [],
+  imports: [RouterModule],
   templateUrl: './header.html',
   styleUrl: './header.scss',
 })
