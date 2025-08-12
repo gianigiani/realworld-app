@@ -34,7 +34,7 @@
           </ul>
         </div>
 
-        @for (article of articles(); track article) {
+        @for (article of paginatedArticles(); track article) {
           <div class="article-preview">
             <div class="article-meta">
               <a href="/profile/eric-simons">
@@ -70,14 +70,42 @@
           <div class="article-preview">There are no articles here yet</div>
         }
 
-        <ul class="pagination">
-          <li class="page-item active">
-            <a class="page-link" href="">1</a>
-          </li>
-          <li class="page-item">
-            <a class="page-link" href="">2</a>
-          </li>
-        </ul>
+        <nav class="text-xs-center">
+          <ul class="pagination">
+            <li class="page-item" [class.disabled]="currentPage() === 1">
+              <button
+                type="button"
+                class="page-link"
+                (click)="goToPage(currentPage() - 1)"
+              >
+                &laquo;
+              </button>
+            </li>
+            @for (page of pages(); track page) {
+              <li class="page-item" [class.active]="currentPage() === page">
+                <button
+                  type="button"
+                  class="page-link"
+                  (click)="goToPage(page)"
+                >
+                  {{ page }}
+                </button>
+              </li>
+            }
+            <li
+              class="page-item"
+              [class.disabled]="currentPage() === totalPages()"
+            >
+              <button
+                type="button"
+                class="page-link"
+                (click)="goToPage(currentPage() + 1)"
+              >
+                &raquo;
+              </button>
+            </li>
+          </ul>
+        </nav>
       </div>
 
       <div class="col-md-3">

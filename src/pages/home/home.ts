@@ -1,5 +1,5 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { Article } from '../../features/article/model/article.model';
 import { ArticleService } from '../../features/article/service/article.service';
@@ -21,6 +21,9 @@ export class Home {
   tags = signal<string[]>([]);
   articles = signal<Article[]>([]);
   type = signal<string>('global');
+
+  currentPage = signal(1);
+  pageSize = signal(5);
 
   constructor() {
     effect(() => {
@@ -48,5 +51,30 @@ export class Home {
     } else {
       this.router.navigate(['/login']);
     }
+  }
+
+  //pagination
+  totalPages = computed(() =>
+    Math.ceil(this.articles().length / this.pageSize()),
+  );
+
+  paginatedArticles = computed(() => {
+    const start = (this.currentPage() - 1) * this.pageSize();
+    return this.articles().slice(start, start + this.pageSize());
+  });
+
+  pages = computed(() => {
+    const total = this.totalPages();
+    const pageNumbers = [];
+
+    for (let i = 1; i <= total; i++) {
+      pageNumbers.push(i);
+    }
+
+    return pageNumbers;
+  });
+
+  goToPage(page: number) {
+    this.currentPage.set(page);
   }
 }
