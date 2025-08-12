@@ -34,6 +34,7 @@
           </ul>
         </div>
 
+        <!-- article -->
         @for (article of paginatedArticles(); track article) {
           <div class="article-preview">
             <div class="article-meta">
@@ -70,6 +71,7 @@
           <div class="article-preview">There are no articles here yet</div>
         }
 
+        <!-- pagination -->
         <nav class="text-xs-center">
           <ul class="pagination">
             <li class="page-item" [class.disabled]="currentPage() === 1">
@@ -108,6 +110,7 @@
         </nav>
       </div>
 
+      <!-- tags -->
       <div class="col-md-3">
         <div class="sidebar">
           <p>Popular Tags</p>
