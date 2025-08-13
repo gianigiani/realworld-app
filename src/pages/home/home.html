@@ -34,80 +34,8 @@
           </ul>
         </div>
 
-        <!-- article -->
-        @for (article of paginatedArticles(); track article) {
-          <div class="article-preview">
-            <div class="article-meta">
-              <a href="/profile/eric-simons">
-                <img alt="" [src]="article.author.image" />
-              </a>
-              <div class="info">
-                <a href="/profile/eric-simons" class="author">{{
-                  article.author.username
-                }}</a>
-                <span class="date">{{
-                  article.createdAt | date: "longDate"
-                }}</span>
-              </div>
-              <button class="btn btn-outline-primary btn-sm pull-xs-right">
-                <i class="ion-heart"></i>
-                {{ article.favoritesCount }}
-              </button>
-            </div>
-            <a [routerLink]="['/article', article.slug]" class="preview-link">
-              <h1>{{ article.title }}</h1>
-              <p>{{ article.description }}</p>
-              <span>Read more...</span>
-              <ul class="tag-list">
-                @for (tag of article.tagList; track tag) {
-                  <li class="tag-default tag-pill tag-outline">
-                    {{ tag }}
-                  </li>
-                }
-              </ul>
-            </a>
-          </div>
-        } @empty {
-          <div class="article-preview">There are no articles here yet</div>
-        }
-
-        <!-- pagination -->
-        <nav class="text-xs-center">
-          <ul class="pagination">
-            <li class="page-item" [class.disabled]="currentPage() === 1">
-              <button
-                type="button"
-                class="page-link"
-                (click)="goToPage(currentPage() - 1)"
-              >
-                &laquo;
-              </button>
-            </li>
-            @for (page of pages(); track page) {
-              <li class="page-item" [class.active]="currentPage() === page">
-                <button
-                  type="button"
-                  class="page-link"
-                  (click)="goToPage(page)"
-                >
-                  {{ page }}
-                </button>
-              </li>
-            }
-            <li
-              class="page-item"
-              [class.disabled]="currentPage() === totalPages()"
-            >
-              <button
-                type="button"
-                class="page-link"
-                (click)="goToPage(currentPage() + 1)"
-              >
-                &raquo;
-              </button>
-            </li>
-          </ul>
-        </nav>
+        <!-- article list with article and pagination-->
+        <app-articles-list [articles]="articles()"></app-articles-list>
       </div>
 
       <!-- tags -->

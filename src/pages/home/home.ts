@@ -1,14 +1,15 @@
-import { CommonModule, DatePipe } from '@angular/common';
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, effect, inject, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { Article } from '../../features/article/model/article.model';
 import { ArticleService } from '../../features/article/service/article.service';
 import { authStore } from '../../features/auth/store/auth.store';
 import { TagsService } from '../../features/tags/service/tags.service';
+import { ArticlesList } from '../../shared/articles-list/articles-list';
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, RouterModule, DatePipe],
+  imports: [CommonModule, RouterModule, ArticlesList],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })
@@ -51,30 +52,5 @@ export class Home {
     } else {
       this.router.navigate(['/login']);
     }
-  }
-
-  //pagination
-  totalPages = computed(() =>
-    Math.ceil(this.articles().length / this.pageSize()),
-  );
-
-  paginatedArticles = computed(() => {
-    const start = (this.currentPage() - 1) * this.pageSize();
-    return this.articles().slice(start, start + this.pageSize());
-  });
-
-  pages = computed(() => {
-    const total = this.totalPages();
-    const pageNumbers = [];
-
-    for (let i = 1; i <= total; i++) {
-      pageNumbers.push(i);
-    }
-
-    return pageNumbers;
-  });
-
-  goToPage(page: number) {
-    this.currentPage.set(page);
   }
 }
