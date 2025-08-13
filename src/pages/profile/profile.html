@@ -38,15 +38,31 @@
         <div class="articles-toggle">
           <ul class="nav nav-pills outline-active">
             <li class="nav-item">
-              <a class="nav-link active" href="">My Articles</a>
+              <a
+                class="nav-link"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                [routerLink]="['/profile', profile()?.username]"
+              >
+                My Posts
+              </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="">Favorited Articles</a>
+              <a
+                class="nav-link"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                [routerLink]="['/profile', profile()?.username, 'favorites']"
+              >
+                Favorited Posts
+              </a>
             </li>
           </ul>
         </div>
 
-        <div class="article-preview">
+        <router-outlet></router-outlet>
+
+        <!-- <div class="article-preview">
           <div class="article-meta">
             <a href="/profile/eric-simons"
               ><img [alt]="" src="http://i.imgur.com/Qr71crq.jpg"
@@ -106,7 +122,7 @@
           <li class="page-item">
             <a class="page-link" href="">2</a>
           </li>
-        </ul>
+        </ul> -->
       </div>
     </div>
   </div>

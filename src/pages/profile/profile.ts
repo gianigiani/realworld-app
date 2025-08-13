@@ -1,12 +1,17 @@
 import { Component, effect, inject, signal } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import {
+  ActivatedRoute,
+  RouterLink,
+  RouterLinkActive,
+  RouterOutlet,
+} from '@angular/router';
 import { authStore } from '../../features/auth/store/auth.store';
 import { Profile } from '../../features/profile/model/profile.model';
 import { ProfileService } from '../../features/profile/profile.service';
 
 @Component({
   selector: 'app-profile',
-  imports: [RouterLink],
+  imports: [RouterLink, RouterLinkActive, RouterOutlet],
   templateUrl: './profile.html',
   styleUrl: './profile.scss',
 })
