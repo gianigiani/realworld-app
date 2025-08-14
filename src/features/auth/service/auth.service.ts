@@ -1,7 +1,8 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, Observable, shareReplay, tap, throwError } from 'rxjs';
+import { catchError, Observable, shareReplay, tap } from 'rxjs';
+import { ErrorService } from '../../errors/service/error.service';
 import { UpdateUser } from '../model/settingsForm.interface';
 import { User } from '../model/user.interface';
 import { authStore } from '../store/auth.store';
@@ -15,6 +16,7 @@ export class AuthService {
   private router = inject(Router);
   private store = inject(authStore);
   private tokenService = inject(TokenService);
+  private errorService = inject(ErrorService);
 
   errorMessage = signal('');
 
@@ -30,7 +32,7 @@ export class AuthService {
       })
       .pipe(
         tap(({ user }) => this.setToken(user)),
-        catchError(this.handleError.bind(this)),
+        catchError(this.errorService.handleError.bind(this)),
       );
   }
 
@@ -42,7 +44,7 @@ export class AuthService {
       })
       .pipe(
         tap(({ user }) => this.setToken(user)),
-        catchError(this.handleError.bind(this)),
+        catchError(this.errorService.handleError.bind(this)),
       );
   }
 
@@ -58,7 +60,7 @@ export class AuthService {
       .put<{ user: UpdateUser }>('/user', {
         user,
       })
-      .pipe(tap(({ user }) => this.setToken(user))); //TODO: error handling
+      .pipe(tap(({ user }) => this.setToken(user)));
   }
 
   //set user token
@@ -92,7 +94,7 @@ export class AuthService {
       tap({
         next: ({ user }) => this.setToken(user),
       }),
-      //TODO: error handling
+
       shareReplay(1),
     );
   }
@@ -101,20 +103,5 @@ export class AuthService {
     this.tokenService.remove();
     this.store.logout();
     this.router.navigate(['/']);
-  }
-
-  private handleError(errorRes: HttpErrorResponse) {
-    let errorMsg = 'Operation failed. Please try again.';
-
-    if (!errorRes.error || !errorRes.error.errors.body) {
-      return throwError(() => errorMsg);
-    }
-
-    if (errorRes.error && errorRes.error.errors.body[0]) {
-      errorMsg = errorRes.error.errors.body[0];
-    }
-    this.errorMessage.set(errorMsg);
-
-    return throwError(() => errorRes);
   }
 }
