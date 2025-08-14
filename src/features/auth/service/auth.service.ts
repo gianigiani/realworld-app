@@ -81,7 +81,6 @@ export class AuthService {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       const expiration = payload.exp;
-      // console.log(expiration);
 
       return typeof expiration === 'number' && Date.now() > expiration * 1000;
     } catch {

@@ -15,6 +15,7 @@ export class ErrorService {
 
     if (errorRes.error && errorRes.error.errors.body[0]) {
       errorMsg = errorRes.error.errors.body[0];
+      // alert(errorMsg);
     }
 
     return throwError(() => new Error(errorMsg));
