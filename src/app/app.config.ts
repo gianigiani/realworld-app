@@ -1,7 +1,5 @@
 import {
   ApplicationConfig,
-  inject,
-  provideAppInitializer,
   provideBrowserGlobalErrorListeners,
   provideZoneChangeDetection,
 } from '@angular/core';
@@ -31,9 +29,9 @@ export const appConfig: ApplicationConfig = {
       withInterceptors([baseUrlInterceptor, tokenInterceptor]),
       withFetch(),
     ),
-    provideAppInitializer(() => {
-      const initializerFn = initAuth(inject(AuthService));
-      return initializerFn();
-    }),
+    // provideAppInitializer(() => {
+    //   const authService = inject(AuthService);
+    //   return initAuth(authService)();
+    // }),
   ],
 };
