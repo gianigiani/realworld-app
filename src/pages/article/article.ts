@@ -1,6 +1,11 @@
 import { DatePipe } from '@angular/common';
 import { Component, effect, inject, signal } from '@angular/core';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Article } from '../../features/article/model/article.model';
 import { ArticleService } from '../../features/article/service/article.service';
@@ -9,10 +14,11 @@ import { authStore } from '../../features/auth/store/auth.store';
 import { Comment } from '../../features/comments/model/comment.interface';
 import { CommentsService } from '../../features/comments/service/comments.service';
 import { ProfileService } from '../../features/profile/profile.service';
+import { CommentComponent } from '../../shared/comment/comment';
 
 @Component({
   selector: 'app-article',
-  imports: [DatePipe, ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CommentComponent, DatePipe],
   templateUrl: './article.html',
   styleUrl: './article.scss',
 })
@@ -30,9 +36,11 @@ export class ArticleComponent {
 
   username = this.store.currentUser()?.username;
 
-  commentControl = new FormControl<string>('', {
-    validators: [Validators.required, Validators.minLength(1)],
-    nonNullable: true,
+  commentForm = new FormGroup({
+    comment: new FormControl<string>('', {
+      validators: [Validators.required, Validators.minLength(1)],
+      nonNullable: true,
+    }),
   });
 
   constructor() {
@@ -40,11 +48,13 @@ export class ArticleComponent {
 
     effect(() => {
       this.getArticle(slug);
-      this.commentsService
-        .getAllComments(slug)
-        .subscribe((result: Comment[]) => {
-          this.comments.set(result);
-        });
+      this.getAllCommentsForArticle(slug);
+    });
+  }
+
+  getAllCommentsForArticle(slug: string) {
+    this.commentsService.getAllComments(slug).subscribe((result: Comment[]) => {
+      this.comments.set(result);
     });
   }
 
@@ -71,15 +81,16 @@ export class ArticleComponent {
   }
 
   addComment() {
-    this.commentsService
-      .createComment(this.article()!.slug, this.commentControl.value)
-      .subscribe({
-        next: (comment) => {
-          console.log(comment);
-        },
-        error: (error) => {
-          this.authService.errorMessage.set(error.error.message); //TODO: check msg error
-        },
-      });
+    const slug = this.article()!.slug;
+    const controlCommentValue = this.commentForm.value.comment!;
+
+    this.commentsService.createComment(slug, controlCommentValue).subscribe({
+      next: () => {
+        this.getAllCommentsForArticle(slug);
+      },
+      error: (error) => {
+        this.authService.errorMessage.set(error.error.message); //TODO: check msg error
+      },
+    });
   }
 }
