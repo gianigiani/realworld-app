@@ -25,10 +25,19 @@ export class ArticleService {
     );
   }
 
-  getTagArticle(slug: string): Observable<Article> {
+  getArticle(slug: string): Observable<Article> {
     return this.http.get<{ article: Article }>(`/articles/${slug}`).pipe(
       map((data) => data.article),
       catchError(this.errorService.handleError.bind(this)),
     );
+  }
+
+  createArticle(article: Partial<Article>): Observable<Article> {
+    return this.http
+      .post<{ article: Article }>('/articles', { article: article })
+      .pipe(
+        map((data) => data.article),
+        catchError(this.errorService.handleError.bind(this)),
+      );
   }
 }
