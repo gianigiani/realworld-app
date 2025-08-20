@@ -1,4 +1,3 @@
-import { inject } from '@angular/core';
 import {
   patchState,
   signalStore,
@@ -7,14 +6,13 @@ import {
   withState,
 } from '@ngrx/signals';
 import { User } from '../model/user.interface';
-import { TokenService } from '../service/token.service';
 
 interface AuthState {
   currentUser: User | null;
 }
 
 const initialState: AuthState = {
-  currentUser: null as User | null,
+  currentUser: null,
 };
 
 export const authStore = signalStore(
@@ -24,22 +22,13 @@ export const authStore = signalStore(
     isAuthenticated: () => !!state.currentUser(),
   })),
   withMethods((store) => {
-    const tokenService = inject(TokenService);
-
     return {
       setUser(user: User | null) {
         patchState(store, { currentUser: user });
-
-        if (user) {
-          tokenService.set(user.token);
-        } else {
-          tokenService.remove();
-        }
       },
 
       logout() {
         patchState(store, { currentUser: null });
-        tokenService.remove();
       },
     };
   }),
