@@ -25,13 +25,11 @@ export const routes: Routes = [
     path: 'profile',
     loadChildren: () =>
       import('../features/profile/profile.routes').then((m) => m.profileRoutes),
-    canActivate: [authGuard],
   },
   {
     path: 'article/:slug',
     loadComponent: () =>
       import('../pages/article/article').then((m) => m.ArticleComponent),
-    canActivate: [authGuard],
   },
   {
     path: 'editor',
