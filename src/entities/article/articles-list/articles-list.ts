@@ -1,5 +1,5 @@
 import { Component, computed, input, signal } from '@angular/core';
-import { Article } from '../../features/article/model/article.model';
+import { Article } from '../../../features/article/model/article.model';
 import { ArticlePreview } from '../article-preview/article-preview';
 
 @Component({

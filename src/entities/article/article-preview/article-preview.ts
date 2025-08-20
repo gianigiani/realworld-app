@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Article } from '../../features/article/model/article.model';
+import { Article } from '../../../features/article/model/article.model';
 
 @Component({
   selector: 'app-article-preview',
