@@ -60,7 +60,6 @@ export class Settings {
         username: this.settingsForm.value.username!,
         bio: this.settingsForm.value.bio!,
         email: this.settingsForm.value.email!,
-        token: this.store.currentUser()?.token || '',
       })
       .subscribe({
         next: ({ user }) => {

@@ -7,11 +7,3 @@ export interface SettingsForm {
   email: FormControl<string>;
   password: FormControl<string>;
 }
-
-export interface UpdateUser {
-  image: string;
-  username: string;
-  bio: string;
-  email: string;
-  token: string;
-}
