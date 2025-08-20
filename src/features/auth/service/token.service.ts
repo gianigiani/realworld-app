@@ -30,7 +30,10 @@ export class TokenService {
 
   isTokenExpired(token: string): boolean {
     try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const padded = base64 + '='.repeat((4 - (base64.length % 4)) % 4);
+      const payload = JSON.parse(atob(padded));
       const expiration = payload.exp;
 
       return typeof expiration === 'number' && Date.now() > expiration * 1000;
