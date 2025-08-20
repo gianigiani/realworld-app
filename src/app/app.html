@@ -1,5 +1,7 @@
-<app-header></app-header>
-
-<router-outlet />
-
-<app-footer></app-footer>
+@if (store.isLoadingUser()) {
+  <app-loading-spinner></app-loading-spinner>
+} @else {
+  <app-header></app-header>
+  <router-outlet />
+  <app-footer></app-footer>
+}

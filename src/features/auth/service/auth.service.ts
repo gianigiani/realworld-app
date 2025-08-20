@@ -1,9 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, Observable, shareReplay, tap } from 'rxjs';
+import { catchError, Observable, tap, throwError } from 'rxjs';
 import { ErrorService } from '../../errors/service/error.service';
-import { UpdateUser } from '../model/settingsForm.interface';
 import { User } from '../model/user.interface';
 import { authStore } from '../store/auth.store';
 import { TokenService } from './token.service';
@@ -26,26 +25,24 @@ export class AuthService {
     email: string;
     password: string;
   }): Observable<{ user: User }> {
-    return this.http
-      .post<{ user: User }>('/users', {
-        user,
-      })
-      .pipe(
-        tap(({ user }) => this.setToken(user)),
-        catchError(this.errorService.handleError.bind(this)),
-      );
+    return this.http.post<{ user: User }>('/users', { user }).pipe(
+      tap(({ user }) => {
+        this.tokenService.set(user.token);
+        this.store.setUser(user);
+      }),
+      catchError(this.errorService.handleError.bind(this)),
+    );
   }
 
   //login existing user
   login(user: { email: string; password: string }): Observable<{ user: User }> {
-    return this.http
-      .post<{ user: User }>('/users/login', {
-        user,
-      })
-      .pipe(
-        tap(({ user }) => this.setToken(user)),
-        catchError(this.errorService.handleError.bind(this)),
-      );
+    return this.http.post<{ user: User }>('/users/login', { user }).pipe(
+      tap(({ user }) => {
+        this.tokenService.set(user.token);
+        this.store.setUser(user);
+      }),
+      catchError(this.errorService.handleError.bind(this)),
+    );
   }
 
   //update user settings
@@ -54,47 +51,39 @@ export class AuthService {
     bio: string;
     username: string;
     email: string;
-    token: string;
   }): Observable<{ user: User }> {
-    return this.http
-      .put<{ user: UpdateUser }>('/user', {
-        user,
-      })
-      .pipe(tap(({ user }) => this.setToken(user)));
-  }
-
-  //set user token
-  setToken(user: User): void {
-    this.tokenService.set(`${user.token}`);
-    this.store.setUser(user);
+    return this.http.put<{ user: User }>('/user', { user }).pipe(
+      tap(({ user }) => {
+        this.tokenService.set(user.token);
+        this.store.setUser(user);
+      }),
+      catchError(this.errorService.handleError.bind(this)),
+    );
   }
 
   getToken(): string | null {
-    const _token = this.tokenService.get();
-    if (_token && this.isTokenExpired(_token)) {
-      return null;
-    }
-    return _token;
+    return this.tokenService.getValidToken();
   }
 
-  isTokenExpired(token: string): boolean {
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const expiration = payload.exp;
-
-      return typeof expiration === 'number' && Date.now() > expiration * 1000;
-    } catch {
-      return true;
-    }
-  }
-
-  getCurrentUser() {
+  getCurrentUser(): Observable<{ user: User }> {
+    this.store.setIsLoadingUser(true);
     return this.http.get<{ user: User }>('/user').pipe(
       tap({
-        next: ({ user }) => this.setToken(user),
+        next: ({ user }) => {
+          this.tokenService.set(user.token);
+          this.store.setUser(user);
+        },
+        error: (err) => {
+          // Clear invalid token on 401 to avoid repeated failures at startup
+          if (err?.status === 401) {
+            this.tokenService.remove();
+          }
+          this.store.setIsLoadingUser(false);
+        },
+        complete: () => this.store.setIsLoadingUser(false),
       }),
-
-      shareReplay(1),
+      // keep this after the tap so error handler above still runs
+      catchError((err) => throwError(() => err)),
     );
   }
 
