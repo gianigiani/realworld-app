@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
+import { ArticlesList } from '../../entities/article/articles-list/articles-list';
 import { Article } from '../../features/article/model/article.model';
-import { ArticlesList } from '../../shared/articles-list/articles-list';
 
 @Component({
   selector: 'app-user-articles',

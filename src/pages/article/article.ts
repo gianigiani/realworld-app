@@ -7,6 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { CommentComponent } from '../../entities/comment/comment';
 import { Article } from '../../features/article/model/article.model';
 import { ArticleService } from '../../features/article/service/article.service';
 import { AuthService } from '../../features/auth/service/auth.service';
@@ -14,7 +15,6 @@ import { authStore } from '../../features/auth/store/auth.store';
 import { Comment } from '../../features/comments/model/comment.interface';
 import { CommentsService } from '../../features/comments/service/comments.service';
 import { ProfileService } from '../../features/profile/profile.service';
-import { CommentComponent } from '../../shared/comment/comment';
 
 @Component({
   selector: 'app-article',

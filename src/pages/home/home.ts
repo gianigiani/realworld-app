@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, effect, inject, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
+import { ArticlesList } from '../../entities/article/articles-list/articles-list';
 import { Article } from '../../features/article/model/article.model';
 import { ArticleService } from '../../features/article/service/article.service';
 import { authStore } from '../../features/auth/store/auth.store';
 import { TagsService } from '../../features/tags/service/tags.service';
-import { ArticlesList } from '../../shared/articles-list/articles-list';
 
 @Component({
   selector: 'app-home',

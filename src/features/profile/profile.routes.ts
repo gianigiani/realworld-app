@@ -19,7 +19,7 @@ export const profileRoutes: Routes = [
           {
             path: 'favorites',
             loadComponent: () =>
-              import('../../shared/favorites/favorites').then(
+              import('../../entities/favorites/favorites').then(
                 (m) => m.Favorites,
               ),
           },
