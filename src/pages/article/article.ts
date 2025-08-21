@@ -87,6 +87,7 @@ export class ArticleComponent {
     this.commentsService.createComment(slug, controlCommentValue).subscribe({
       next: () => {
         this.getAllCommentsForArticle(slug);
+        this.commentForm.reset();
       },
       error: (error) => {
         this.authService.errorMessage.set(error.error.message); //TODO: check msg error
