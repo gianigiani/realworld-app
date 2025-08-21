@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, Observable, tap, throwError } from 'rxjs';
+import { catchError, Observable, tap } from 'rxjs';
 import { ErrorService } from '../../errors/service/error.service';
 import { User } from '../model/user.interface';
 import { authStore } from '../store/auth.store';
@@ -18,6 +18,7 @@ export class AuthService {
   private errorService = inject(ErrorService);
 
   errorMessage = signal('');
+  private tokenExpirationTimer: number | null = null;
 
   //register new user
   register(user: {
@@ -65,31 +66,55 @@ export class AuthService {
     return this.tokenService.getValidToken();
   }
 
-  getCurrentUser(): Observable<{ user: User }> {
-    this.store.setIsLoadingUser(true);
-    return this.http.get<{ user: User }>('/user').pipe(
-      tap({
-        next: ({ user }) => {
-          this.tokenService.set(user.token);
-          this.store.setUser(user);
-        },
-        error: (err) => {
-          // Clear invalid token on 401 to avoid repeated failures at startup
-          if (err?.status === 401) {
-            this.tokenService.remove();
-          }
-          this.store.setIsLoadingUser(false);
-        },
-        complete: () => this.store.setIsLoadingUser(false),
-      }),
-      // keep this after the tap so error handler above still runs
-      catchError((err) => throwError(() => err)),
+  autoLogin(): void {
+    const token = this.tokenService.getValidToken();
+    if (!token) {
+      return;
+    }
+
+    // If we already have a user in store, do nothing
+    // Otherwise fetch current user with the valid token
+    if (!this.store.isAuthenticated()) {
+      this.getCurrentUser();
+    }
+
+    // Schedule automatic logout at token expiration
+    const ms = this.tokenService.getRemainingTimeValidity(token);
+    if (ms > 0) {
+      this.autoLogout(ms);
+    }
+  }
+
+  autoLogout(expirationDuration: number): void {
+    this.tokenExpirationTimer = setTimeout(
+      () => this.logout(),
+      expirationDuration,
     );
+  }
+
+  getCurrentUser() {
+    this.store.setIsLoadingUser(true);
+    return this.http
+      .get<{ user: User }>('/user')
+      .subscribe(({ user }: { user: User }) => {
+        this.tokenService.set(user.token);
+        this.store.setUser(user);
+        this.store.setIsLoadingUser(false);
+
+        // Schedule automatic logout at token expiration
+        const ms = this.tokenService.getRemainingTimeValidity(user.token);
+        if (ms > 0) this.autoLogout(ms);
+      });
   }
 
   logout() {
     this.tokenService.remove();
     this.store.logout();
-    this.router.navigate(['/']);
+    this.router.navigate(['/login']);
+
+    if (this.tokenExpirationTimer) {
+      clearTimeout(this.tokenExpirationTimer);
+      this.tokenExpirationTimer = null;
+    }
   }
 }

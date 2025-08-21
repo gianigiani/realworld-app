@@ -30,15 +30,31 @@ export class TokenService {
 
   isTokenExpired(token: string): boolean {
     try {
+      const expirationDate = this.getExpirationDate(token);
+      if (!expirationDate) return true;
+      return Date.now() > expirationDate.getTime();
+    } catch {
+      return true;
+    }
+  }
+
+  getExpirationDate(token: string): Date | null {
+    try {
       const base64Url = token.split('.')[1];
       const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
       const padded = base64 + '='.repeat((4 - (base64.length % 4)) % 4);
       const payload = JSON.parse(atob(padded));
       const expiration = payload.exp;
-
-      return typeof expiration === 'number' && Date.now() > expiration * 1000;
+      if (typeof expiration !== 'number') return null;
+      return new Date(expiration * 1000);
     } catch {
-      return true;
+      return null;
     }
+  }
+
+  getRemainingTimeValidity(token: string): number {
+    const expirationDate = this.getExpirationDate(token);
+    if (!expirationDate) return 0;
+    return Math.max(0, expirationDate.getTime() - Date.now());
   }
 }
