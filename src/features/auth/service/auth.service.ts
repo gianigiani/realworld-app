@@ -81,11 +81,12 @@ export class AuthService {
     // If we already have a user in store, do nothing
     // Otherwise fetch current user with the valid token
     if (!this.store.isAuthenticated()) {
-      this.getCurrentUser();
+      this.getCurrentUser().subscribe();
     }
 
     // Schedule automatic logout at token expiration
     const ms = this.tokenService.getRemainingTimeValidity(token);
+
     if (ms > 0) {
       this.autoLogout(ms);
     }
@@ -100,8 +101,8 @@ export class AuthService {
 
   getCurrentUser() {
     this.store.setIsLoadingUser(true);
-    return this.http.get<{ user: User }>('/user').subscribe(
-      ({ user }: { user: User }) => {
+    return this.http.get<{ user: User }>('/user').pipe(
+      tap(({ user }: { user: User }) => {
         this.tokenService.set(user.token);
         this.store.setUser(user);
         this.store.setIsLoadingUser(false);
@@ -109,11 +110,11 @@ export class AuthService {
         // Schedule automatic logout at token expiration
         const ms = this.tokenService.getRemainingTimeValidity(user.token);
         if (ms > 0) this.autoLogout(ms);
-      },
-      (error) => {
-        console.log(error);
+      }),
+      catchError((errorRes: HttpErrorResponse) => {
         this.store.setIsLoadingUser(false);
-      },
+        return this.errorService.handleError(errorRes);
+      }),
     );
   }
 
