@@ -8,6 +8,7 @@ import {
 import { Router } from '@angular/router';
 import { AuthForm } from '../../features/auth/model/authForm.interface';
 import { AuthService } from '../../features/auth/service/auth.service';
+import { ErrorService } from '../../features/errors/service/error.service';
 import { LoadingSpinner } from '../../shared/loading-spinner/loading-spinner';
 
 @Component({
@@ -17,8 +18,9 @@ import { LoadingSpinner } from '../../shared/loading-spinner/loading-spinner';
   styleUrl: './register.scss',
 })
 export class Register {
+  private authService = inject(AuthService);
   authForm: FormGroup<AuthForm>;
-  authService = inject(AuthService);
+  errorService = inject(ErrorService);
   router = inject(Router);
   isLoading = signal(false);
 
@@ -55,7 +57,7 @@ export class Register {
 
         error: (error) => {
           this.isLoading.set(false);
-          this.authService.errorMessage.set(error.error.message);
+          this.errorService.errorMessage.set(error.error.message);
         },
       });
   }

@@ -1,11 +1,13 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ErrorService {
+  errorMessage = signal('');
+
   handleError(errorRes: HttpErrorResponse) {
     let errorMsg = 'Operation failed. Please try again.';
 
@@ -15,6 +17,7 @@ export class ErrorService {
 
     if (errorRes.error && errorRes.error.errors.body[0]) {
       errorMsg = errorRes.error.errors.body[0];
+      this.errorMessage.set(errorMsg);
       // alert(errorMsg);
     }
 

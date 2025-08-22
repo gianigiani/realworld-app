@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -8,7 +8,8 @@ import {
 import { Router } from '@angular/router';
 import { SettingsForm } from '../../features/auth/model/settingsForm.interface';
 import { AuthService } from '../../features/auth/service/auth.service';
-import { authStore } from '../../features/auth/store/auth.store';
+
+import { ErrorService } from '../../features/errors/service/error.service';
 
 @Component({
   selector: 'app-settings',
@@ -17,12 +18,11 @@ import { authStore } from '../../features/auth/store/auth.store';
   styleUrl: './settings.scss',
 })
 export class Settings {
-  authService = inject(AuthService);
-  store = inject(authStore);
+  private authService = inject(AuthService);
   router = inject(Router);
+  errorService = inject(ErrorService);
 
   settingsForm: FormGroup<SettingsForm>;
-  errorMessage = signal('');
 
   constructor() {
     this.settingsForm = new FormGroup<SettingsForm>({
@@ -66,7 +66,7 @@ export class Settings {
           this.router.navigate(['/profile/', user.username]);
         },
         error: (error) => {
-          this.authService.errorMessage.set(error.error.message);
+          this.errorService.errorMessage.set(error.error.message);
         },
       });
   }

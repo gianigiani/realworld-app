@@ -2,9 +2,9 @@
   <div class="container page">
     <div class="row">
       <div class="col-md-10 offset-md-1 col-xs-12">
-        @if (authService.errorMessage()) {
+        @if (errorService.errorMessage()) {
           <ul class="error-messages">
-            <li>{{ authService.errorMessage() }}</li>
+            <li>{{ errorService.errorMessage() }}</li>
           </ul>
         }
         <form [formGroup]="articleForm" (ngSubmit)="onSubmit()">

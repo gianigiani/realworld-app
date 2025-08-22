@@ -7,9 +7,9 @@
           <a href="/register">Need an account?</a>
         </p>
 
-        @if (authService.errorMessage()) {
+        @if (errorService.errorMessage()) {
           <ul class="error-messages">
-            <li>{{ authService.errorMessage() }}</li>
+            <li>{{ errorService.errorMessage() }}</li>
           </ul>
         }
 

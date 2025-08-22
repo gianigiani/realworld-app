@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, Observable, tap } from 'rxjs';
@@ -31,7 +31,9 @@ export class AuthService {
         this.tokenService.set(user.token);
         this.store.setUser(user);
       }),
-      catchError(this.errorService.handleError.bind(this)),
+      catchError((errorRes: HttpErrorResponse) =>
+        this.errorService.handleError(errorRes),
+      ),
     );
   }
 
@@ -42,7 +44,9 @@ export class AuthService {
         this.tokenService.set(user.token);
         this.store.setUser(user);
       }),
-      catchError(this.errorService.handleError.bind(this)),
+      catchError((errorRes: HttpErrorResponse) =>
+        this.errorService.handleError(errorRes),
+      ),
     );
   }
 
@@ -58,7 +62,9 @@ export class AuthService {
         this.tokenService.set(user.token);
         this.store.setUser(user);
       }),
-      catchError(this.errorService.handleError.bind(this)),
+      catchError((errorRes: HttpErrorResponse) =>
+        this.errorService.handleError(errorRes),
+      ),
     );
   }
 
@@ -94,9 +100,8 @@ export class AuthService {
 
   getCurrentUser() {
     this.store.setIsLoadingUser(true);
-    return this.http
-      .get<{ user: User }>('/user')
-      .subscribe(({ user }: { user: User }) => {
+    return this.http.get<{ user: User }>('/user').subscribe(
+      ({ user }: { user: User }) => {
         this.tokenService.set(user.token);
         this.store.setUser(user);
         this.store.setIsLoadingUser(false);
@@ -104,7 +109,12 @@ export class AuthService {
         // Schedule automatic logout at token expiration
         const ms = this.tokenService.getRemainingTimeValidity(user.token);
         if (ms > 0) this.autoLogout(ms);
-      });
+      },
+      (error) => {
+        console.log(error);
+        this.store.setIsLoadingUser(false);
+      },
+    );
   }
 
   logout() {

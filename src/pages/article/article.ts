@@ -10,10 +10,10 @@ import { ActivatedRoute } from '@angular/router';
 import { CommentComponent } from '../../entities/comment/comment';
 import { Article } from '../../features/article/model/article.model';
 import { ArticleService } from '../../features/article/service/article.service';
-import { AuthService } from '../../features/auth/service/auth.service';
 import { authStore } from '../../features/auth/store/auth.store';
 import { Comment } from '../../features/comments/model/comment.interface';
 import { CommentsService } from '../../features/comments/service/comments.service';
+import { ErrorService } from '../../features/errors/service/error.service';
 import { ProfileService } from '../../features/profile/profile.service';
 
 @Component({
@@ -26,9 +26,9 @@ export class ArticleComponent {
   private articleService = inject(ArticleService);
   private commentsService = inject(CommentsService);
   private route = inject(ActivatedRoute);
-  private authService = inject(AuthService);
   private store = inject(authStore);
   private profileService = inject(ProfileService);
+  private errorService = inject(ErrorService);
 
   article = signal<Article | null>(null);
   comments = signal<Comment[]>([]);
@@ -90,7 +90,7 @@ export class ArticleComponent {
         this.commentForm.reset();
       },
       error: (error) => {
-        this.authService.errorMessage.set(error.error.message); //TODO: check msg error
+        this.errorService.errorMessage.set(error.error.message);
       },
     });
   }

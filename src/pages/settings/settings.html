@@ -4,9 +4,9 @@
       <div class="col-md-6 offset-md-3 col-xs-12">
         <h1 class="text-xs-center">Your Settings</h1>
 
-        @if (authService.errorMessage()) {
+        @if (errorService.errorMessage()) {
           <ul class="error-messages">
-            <li>{{ authService.errorMessage() }}</li>
+            <li>{{ errorService.errorMessage() }}</li>
           </ul>
         }
 

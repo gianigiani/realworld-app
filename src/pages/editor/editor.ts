@@ -8,8 +8,9 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ArticleService } from '../../features/article/service/article.service';
-import { AuthService } from '../../features/auth/service/auth.service';
+
 import { ArticleForm } from '../../features/editor/model/articleForm.interface';
+import { ErrorService } from '../../features/errors/service/error.service';
 
 @Component({
   selector: 'app-editor',
@@ -20,7 +21,7 @@ import { ArticleForm } from '../../features/editor/model/articleForm.interface';
 export class Editor {
   private articleService = inject(ArticleService);
   private router = inject(Router);
-  authService = inject(AuthService);
+  errorService = inject(ErrorService);
 
   articleForm: FormGroup<ArticleForm> = new FormGroup<ArticleForm>({
     title: new FormControl('', {
@@ -69,7 +70,7 @@ export class Editor {
           this.router.navigate(['/article/', article.slug]);
         },
         error: (error) => {
-          this.authService.errorMessage.set(error.error.message); //TODO: check msg error
+          this.errorService.errorMessage.set(error.error.message);
         },
       });
     }
