@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { catchError, map, Observable } from 'rxjs';
 import { ErrorService } from '../../errors/service/error.service';
@@ -16,7 +16,9 @@ export class CommentsService {
       .get<{ comments: Comment[] }>(`/articles/${slug}/comments`)
       .pipe(
         map((data) => data.comments),
-        catchError(this.errorService.handleError.bind(this)),
+        catchError((errorRes: HttpErrorResponse) =>
+          this.errorService.handleError(errorRes),
+        ),
       );
   }
 
@@ -27,7 +29,9 @@ export class CommentsService {
       })
       .pipe(
         map((data) => data.comment),
-        catchError(this.errorService.handleError.bind(this)),
+        catchError((errorRes: HttpErrorResponse) =>
+          this.errorService.handleError(errorRes),
+        ),
       );
   }
 }

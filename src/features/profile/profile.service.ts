@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { catchError, map, Observable } from 'rxjs';
 import { ErrorService } from '../errors/service/error.service';
@@ -14,7 +14,9 @@ export class ProfileService {
   getUserProfile(username: string): Observable<Profile> {
     return this.http.get<{ profile: Profile }>('/profiles/' + username).pipe(
       map((data) => data.profile),
-      catchError(this.errorService.handleError.bind(this)),
+      catchError((errorRes: HttpErrorResponse) =>
+        this.errorService.handleError(errorRes),
+      ),
     );
   }
 
@@ -23,7 +25,9 @@ export class ProfileService {
       .post<{ profile: Profile }>('/profiles/' + username + '/follow', {})
       .pipe(
         map((data: { profile: Profile }) => data.profile),
-        catchError(this.errorService.handleError.bind(this)),
+        catchError((errorRes: HttpErrorResponse) =>
+          this.errorService.handleError(errorRes),
+        ),
       );
   }
 
@@ -32,7 +36,9 @@ export class ProfileService {
       .delete<{ profile: Profile }>('/profiles/' + username + '/follow')
       .pipe(
         map((data: { profile: Profile }) => data.profile),
-        catchError(this.errorService.handleError.bind(this)),
+        catchError((errorRes: HttpErrorResponse) =>
+          this.errorService.handleError(errorRes),
+        ),
       );
   }
 }
