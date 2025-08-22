@@ -17,6 +17,6 @@ export class App {
   store = inject(authStore);
 
   constructor() {
-    this.authService.autoLogin();
+    this.authService.getCurrentUser().subscribe();
   }
 }
