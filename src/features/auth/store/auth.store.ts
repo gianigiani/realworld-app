@@ -25,11 +25,8 @@ export const authStore = signalStore(
   })),
   withMethods((store) => {
     return {
-      setUser(currentUser?: User) {
-        patchState(store, { currentUser });
-      },
-      signIn(currentUser?: User) {
-        patchState(store, { isSignedIn: true, currentUser });
+      signIn(user: User) {
+        patchState(store, { isSignedIn: true, currentUser: user });
       },
       logout() {
         patchState(store, { isSignedIn: false, currentUser: null });

@@ -1,37 +1,23 @@
 import { inject } from '@angular/core';
-import { CanActivateFn, Router, UrlTree } from '@angular/router';
-import { filter, map, Observable, take } from 'rxjs';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { CanActivateFn, Router } from '@angular/router';
+import { filter, map } from 'rxjs';
 import { AuthService } from '../service/auth.service';
 
-export const authGuard: CanActivateFn = ():
-  | boolean
-  | UrlTree
-  | Promise<boolean | UrlTree>
-  | Observable<boolean | UrlTree> => {
+export const authGuard: CanActivateFn = () => {
   const router = inject(Router);
   const authService = inject(AuthService);
 
-  // return authService.signedin$.pipe(
-  //   skipWhile((value) => value === null),
-  //   take(1),
-  //   map((val) => {
-  //     const isAuth = val;
-  //     if (isAuth) {
-  //       return true;
-  //     }
-  //     return router.createUrlTree(['/login']);
-  //   }),
-  // );
+  return toObservable(authService.getCurrentUserResource.status).pipe(
+    filter((status) => status !== 'loading'),
+    map(() => {
+      const user = authService.getCurrentUserResource.value()?.user;
 
-  return authService.signedin$.pipe(
-    filter((value) => value !== null),
-    take(1),
-    map((val) => {
-      const isAuth = val;
-      if (isAuth) {
-        return true;
+      if (!user) {
+        return router.createUrlTree(['/login']);
       }
-      return router.createUrlTree(['/login']);
+
+      return true;
     }),
   );
 };
