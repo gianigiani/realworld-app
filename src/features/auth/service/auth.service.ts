@@ -29,6 +29,7 @@ export class AuthService {
       tap(({ user }) => {
         this.tokenService.set(user.token);
         this.store.setUser(user);
+        this.store.signIn(user);
         this.signedin$.next(true);
       }),
       catchError((errorRes: HttpErrorResponse) =>
@@ -43,6 +44,7 @@ export class AuthService {
       tap(({ user }) => {
         this.tokenService.set(user.token);
         this.store.setUser(user);
+        this.store.signIn(user);
         this.signedin$.next(true);
       }),
       catchError((errorRes: HttpErrorResponse) =>
@@ -80,6 +82,7 @@ export class AuthService {
         this.tokenService.set(user.token);
         this.store.setUser(user);
         this.signedin$.next(true);
+        this.store.signIn(user);
       }),
       catchError((errorRes: HttpErrorResponse) =>
         this.errorService.handleError(errorRes),

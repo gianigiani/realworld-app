@@ -9,12 +9,12 @@ import { User } from '../model/user.interface';
 
 interface AuthState {
   currentUser: User | null;
-  isLoadingUser: boolean;
+  isSignedIn: boolean | null;
 }
 
 const initialState: AuthState = {
   currentUser: null,
-  isLoadingUser: false,
+  isSignedIn: null,
 };
 
 export const authStore = signalStore(
@@ -25,14 +25,14 @@ export const authStore = signalStore(
   })),
   withMethods((store) => {
     return {
-      setUser(user: User | null) {
-        patchState(store, { currentUser: user });
+      setUser(currentUser?: User) {
+        patchState(store, { currentUser });
       },
-      setIsLoadingUser(isLoading: boolean) {
-        patchState(store, { isLoadingUser: isLoading });
+      signIn(currentUser?: User) {
+        patchState(store, { isSignedIn: true, currentUser });
       },
       logout() {
-        patchState(store, { currentUser: null });
+        patchState(store, { isSignedIn: false, currentUser: null });
       },
     };
   }),
