@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -46,10 +46,10 @@ export class ArticleComponent {
   constructor() {
     const slug = this.route.snapshot.params['slug'];
 
-    effect(() => {
-      this.getArticle(slug);
-      this.getAllCommentsForArticle(slug);
-    });
+    // effect(() => {
+    this.getArticle(slug);
+    this.getAllCommentsForArticle(slug);
+    // });
   }
 
   getAllCommentsForArticle(slug: string) {
@@ -90,7 +90,7 @@ export class ArticleComponent {
         this.commentForm.reset();
       },
       error: (error) => {
-        this.errorService.errorMessage.set(error.error.message);
+        this.errorService.handleError(error);
       },
     });
   }

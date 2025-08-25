@@ -1,4 +1,4 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import {
   ActivatedRoute,
   RouterLink,
@@ -25,9 +25,7 @@ export class ProfileComponent {
   username = this.store.currentUser()?.username;
 
   constructor() {
-    effect(() => {
-      this.getUser(this.route.snapshot.params['username']);
-    });
+    this.getUser(this.route.snapshot.params['username']);
   }
 
   getUser(username: string) {

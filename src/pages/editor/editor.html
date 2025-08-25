@@ -2,11 +2,6 @@
   <div class="container page">
     <div class="row">
       <div class="col-md-10 offset-md-1 col-xs-12">
-        @if (errorService.errorMessage()) {
-          <ul class="error-messages">
-            <li>{{ errorService.errorMessage() }}</li>
-          </ul>
-        }
         <form [formGroup]="articleForm" (ngSubmit)="onSubmit()">
           <fieldset>
             <fieldset class="form-group">

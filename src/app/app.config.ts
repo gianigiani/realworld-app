@@ -10,6 +10,8 @@ import {
   withFetch,
   withInterceptors,
 } from '@angular/common/http';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideToastr } from 'ngx-toastr';
 import { baseUrlInterceptor } from '../features/auth/interceptors/api.interceptor';
 import { tokenInterceptor } from '../features/auth/interceptors/token.interceptor';
 import { routes } from './app.routes';
@@ -23,5 +25,7 @@ export const appConfig: ApplicationConfig = {
       withInterceptors([baseUrlInterceptor, tokenInterceptor]),
       withFetch(),
     ),
+    provideAnimations(),
+    provideToastr(),
   ],
 };

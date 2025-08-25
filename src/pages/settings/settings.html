@@ -4,12 +4,6 @@
       <div class="col-md-6 offset-md-3 col-xs-12">
         <h1 class="text-xs-center">Your Settings</h1>
 
-        @if (errorService.errorMessage()) {
-          <ul class="error-messages">
-            <li>{{ errorService.errorMessage() }}</li>
-          </ul>
-        }
-
         <form [formGroup]="settingsForm" (ngSubmit)="onSubmit()">
           <fieldset>
             <fieldset class="form-group">

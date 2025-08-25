@@ -57,7 +57,7 @@ export class Register {
 
         error: (error) => {
           this.isLoading.set(false);
-          this.errorService.errorMessage.set(error.error.message);
+          this.errorService.handleError(error);
         },
       });
   }

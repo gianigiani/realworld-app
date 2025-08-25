@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { ArticlesList } from '../../entities/article/articles-list/articles-list';
 import { Article } from '../../features/article/model/article.model';
@@ -27,13 +27,11 @@ export class Home {
   pageSize = signal(5);
 
   constructor() {
-    effect(() => {
-      this.tagsService.getAllTags().subscribe((result: string[]) => {
-        this.tags.set(result);
-      });
-
-      this.populateGlobalArticles();
+    this.tagsService.getAllTags().subscribe((result: string[]) => {
+      this.tags.set(result);
     });
+
+    this.populateGlobalArticles();
   }
 
   populateGlobalArticles() {

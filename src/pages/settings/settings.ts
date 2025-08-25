@@ -66,7 +66,7 @@ export class Settings {
           this.router.navigate(['/profile/', user.username]);
         },
         error: (error) => {
-          this.errorService.errorMessage.set(error.error.message);
+          this.errorService.handleError(error);
         },
       });
   }

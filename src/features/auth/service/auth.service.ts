@@ -6,6 +6,7 @@ import {
 import { effect, inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, Observable, tap } from 'rxjs';
+import { ToastService } from '../../../shared/toast/toast.service';
 import { ErrorService } from '../../errors/service/error.service';
 import { User } from '../model/user.interface';
 import { authStore } from '../store/auth.store';
@@ -20,6 +21,7 @@ export class AuthService {
   private store = inject(authStore);
   private tokenService = inject(TokenService);
   private errorService = inject(ErrorService);
+  private toastService = inject(ToastService);
 
   //register new user
   register(user: {
@@ -31,6 +33,7 @@ export class AuthService {
       tap(({ user }) => {
         this.tokenService.set(user.token);
         this.store.signIn(user);
+        this.toastService.showSuccess("You're in!");
       }),
       catchError((errorRes: HttpErrorResponse) =>
         this.errorService.handleError(errorRes),
@@ -44,6 +47,7 @@ export class AuthService {
       tap(({ user }) => {
         this.tokenService.set(user.token);
         this.store.signIn(user);
+        this.toastService.showSuccess("You're in!");
       }),
       catchError((errorRes: HttpErrorResponse) =>
         this.errorService.handleError(errorRes),
@@ -62,6 +66,7 @@ export class AuthService {
       tap(({ user }) => {
         this.tokenService.set(user.token);
         this.store.signIn(user);
+        this.toastService.showSuccess('Changes saved!');
       }),
       catchError((errorRes: HttpErrorResponse) =>
         this.errorService.handleError(errorRes),
@@ -84,6 +89,9 @@ export class AuthService {
     if (error) {
       // FIXME: handle error
       // this.errorService.handleError(error);
+
+      this.errorService.handleError(error as HttpErrorResponse);
+
       this.logout();
       return null;
     }
@@ -110,7 +118,10 @@ export class AuthService {
       }
 
       if (status === 'error') {
+        const error = this.getCurrentUserResource.error();
+        this.errorService.handleError(error as HttpErrorResponse);
         // TODO: this.errorService.handleError(this.getCurrentUserResource.error())
+
         this.logout();
       }
 
@@ -126,6 +137,7 @@ export class AuthService {
   }
 
   logout() {
+    this.toastService.showSuccess('See you soon!');
     this.tokenService.remove();
     this.store.logout();
     this.router.navigate(['/login']);

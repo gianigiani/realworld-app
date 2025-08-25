@@ -70,7 +70,7 @@ export class Editor {
           this.router.navigate(['/article/', article.slug]);
         },
         error: (error) => {
-          this.errorService.errorMessage.set(error.error.message);
+          this.errorService.handleError(error);
         },
       });
     }

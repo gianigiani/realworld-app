@@ -1,7 +1,7 @@
-<!-- @if (store.isSignedIn()) {
+@if (status() === "loading") {
   <app-loading-spinner></app-loading-spinner>
-} @else { -->
-<app-header></app-header>
-<router-outlet />
-<app-footer></app-footer>
-<!-- } -->
+} @else {
+  <app-header></app-header>
+  <router-outlet />
+  <app-footer></app-footer>
+}

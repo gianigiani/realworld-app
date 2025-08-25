@@ -7,12 +7,6 @@
           <a href="/login">Have an account?</a>
         </p>
 
-        @if (errorService.errorMessage()) {
-          <ul class="error-messages">
-            <li>{{ errorService.errorMessage() }}</li>
-          </ul>
-        }
-
         @if (isLoading()) {
           <div class="text-xs-center">
             <app-loading-spinner></app-loading-spinner>
