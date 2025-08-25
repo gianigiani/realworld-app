@@ -1,7 +1,11 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  httpResource,
+} from '@angular/common/http';
+import { effect, inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, catchError, Observable, tap } from 'rxjs';
+import { catchError, Observable, tap } from 'rxjs';
 import { ErrorService } from '../../errors/service/error.service';
 import { User } from '../model/user.interface';
 import { authStore } from '../store/auth.store';
@@ -17,8 +21,6 @@ export class AuthService {
   private tokenService = inject(TokenService);
   private errorService = inject(ErrorService);
 
-  signedin$ = new BehaviorSubject<boolean | null>(null);
-
   //register new user
   register(user: {
     username: string;
@@ -28,9 +30,7 @@ export class AuthService {
     return this.http.post<{ user: User }>('/users', { user }).pipe(
       tap(({ user }) => {
         this.tokenService.set(user.token);
-        this.store.setUser(user);
         this.store.signIn(user);
-        this.signedin$.next(true);
       }),
       catchError((errorRes: HttpErrorResponse) =>
         this.errorService.handleError(errorRes),
@@ -43,9 +43,7 @@ export class AuthService {
     return this.http.post<{ user: User }>('/users/login', { user }).pipe(
       tap(({ user }) => {
         this.tokenService.set(user.token);
-        this.store.setUser(user);
         this.store.signIn(user);
-        this.signedin$.next(true);
       }),
       catchError((errorRes: HttpErrorResponse) =>
         this.errorService.handleError(errorRes),
@@ -63,8 +61,7 @@ export class AuthService {
     return this.http.put<{ user: User }>('/user', { user }).pipe(
       tap(({ user }) => {
         this.tokenService.set(user.token);
-        this.store.setUser(user);
-        this.signedin$.next(true);
+        this.store.signIn(user);
       }),
       catchError((errorRes: HttpErrorResponse) =>
         this.errorService.handleError(errorRes),
@@ -77,21 +74,58 @@ export class AuthService {
   }
 
   getCurrentUser() {
-    return this.http.get<{ user: User }>('/user').pipe(
-      tap(({ user }: { user: User }) => {
-        this.tokenService.set(user.token);
-        this.store.setUser(user);
-        this.signedin$.next(true);
-        this.store.signIn(user);
-      }),
-      catchError((errorRes: HttpErrorResponse) =>
-        this.errorService.handleError(errorRes),
-      ),
-    );
+    const user = this.getCurrentUserResource.value()?.user;
+
+    if (!user) {
+      return null;
+    }
+
+    const error = this.getCurrentUserResource.error();
+    if (error) {
+      // FIXME: handle error
+      // this.errorService.handleError(error);
+      this.logout();
+      return null;
+    }
+
+    this.tokenService.set(user.token);
+    this.store.signIn(user);
+    return user;
+  }
+
+  getCurrentUserResource = httpResource<{ user: User }>(() => {
+    const token = this.getToken();
+    if (!token) {
+      return undefined;
+    }
+    return `/user`;
+  });
+
+  constructor() {
+    effect(() => {
+      const status = this.getCurrentUserResource.status();
+
+      if (status === 'loading') {
+        return;
+      }
+
+      if (status === 'error') {
+        // TODO: this.errorService.handleError(this.getCurrentUserResource.error())
+        this.logout();
+      }
+
+      const user = this.getCurrentUserResource.value()?.user;
+
+      if (!user) {
+        return;
+      }
+
+      this.tokenService.set(user.token);
+      this.store.signIn(user);
+    });
   }
 
   logout() {
-    this.signedin$.next(false);
     this.tokenService.remove();
     this.store.logout();
     this.router.navigate(['/login']);
