@@ -116,10 +116,6 @@ export class AuthService {
     );
   }
 
-  getToken(): string | null {
-    return this.tokenService.getValidToken();
-  }
-
   logout() {
     this.toastService.showSuccess('See you soon!');
     this.tokenService.remove();
