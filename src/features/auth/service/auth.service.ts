@@ -38,7 +38,7 @@ export class AuthService {
       }
 
       if (status === 'error') {
-        this.errorService.setErrorMssage(this.error());
+        this.errorMsg();
 
         this.logout();
         return null;
@@ -57,7 +57,7 @@ export class AuthService {
 
   // get resources
   getCurrentUserResource = httpResource<{ user: User }>(() =>
-    this.tokenService.token() ? `/user` : undefined,
+    this.tokenService.token() ? `/user/dw` : undefined,
   );
 
   //register new user
@@ -88,7 +88,9 @@ export class AuthService {
         this.toastService.showSuccess("You're in!");
       }),
       catchError((errorRes: HttpErrorResponse) => {
-        this.errorService.setErrorMssage(errorRes);
+        // this.errorService.setErrorMssage(errorRes);
+        // this.errorMsg();
+        this.errorService.setErrorMssage(this.error());
         return throwError(() => errorRes);
       }),
     );
