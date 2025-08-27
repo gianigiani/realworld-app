@@ -1,5 +1,9 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  httpResource,
+} from '@angular/common/http';
+import { inject, Injectable, Signal } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { ErrorService } from '../errors/service/error.service';
 import { Profile } from './model/profile.model';
@@ -10,6 +14,12 @@ import { Profile } from './model/profile.model';
 export class ProfileService {
   private http = inject(HttpClient);
   private errorService = inject(ErrorService);
+
+  getProfile(username: Signal<string>) {
+    return httpResource<{ profile: Profile }>(() =>
+      username() ? `/profiles/${username()}` : undefined,
+    );
+  }
 
   getUserProfile(username: string): Observable<Profile> {
     return this.http.get<{ profile: Profile }>('/profiles/' + username).pipe(

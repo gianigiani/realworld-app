@@ -4,7 +4,7 @@ import { TokenService } from '../service/token.service';
 
 export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
   const tokenService = inject(TokenService);
-  const token = tokenService.getValidToken();
+  const token = tokenService.token();
 
   const updatedReq = req.clone({
     setHeaders: token ? { Authorization: `Token ${token}` } : {},

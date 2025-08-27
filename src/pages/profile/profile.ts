@@ -1,10 +1,13 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import {
   ActivatedRoute,
   RouterLink,
   RouterLinkActive,
   RouterOutlet,
 } from '@angular/router';
+import { map } from 'rxjs';
+import { AuthService } from '../../features/auth/service/auth.service';
 import { authStore } from '../../features/auth/store/auth.store';
 import { Profile } from '../../features/profile/model/profile.model';
 import { ProfileService } from '../../features/profile/profile.service';
@@ -19,39 +22,32 @@ export class ProfileComponent {
   store = inject(authStore);
   profileService = inject(ProfileService);
   route = inject(ActivatedRoute);
-  profile = signal<Profile | null>(null);
-  isUser = signal<boolean>(false);
+  private authService = inject(AuthService);
 
-  username = this.store.currentUser()?.username;
+  private currentUser = computed(
+    () => this.authService.getCurrentUserResource.value()?.user.username,
+  );
+  private username = toSignal(
+    this.route.params.pipe(map((params) => params['username'])),
+    { initialValue: '' },
+  );
 
-  constructor() {
-    this.getUser(this.route.snapshot.params['username']);
-  }
-
-  getUser(username: string) {
-    this.profileService
-      .getUserProfile(username)
-      .subscribe((result: Profile) => {
-        this.profile.set(result);
-
-        this.isUser.set(this.username === result?.username);
-      });
-  }
+  isUser = computed(() => this.username() === this.currentUser());
+  profile = computed(
+    () => this.profileResource.value()?.profile ?? ({} as Profile),
+  );
+  profileResource = this.profileService.getProfile(this.username);
 
   toggleFollowing() {
-    if (this.store.isAuthenticated()) {
-      if (!this.profile()?.following) {
-        this.profileService
-          .followUser(this.profile()!.username)
-          .subscribe(() =>
-            this.getUser(this.route.snapshot.params['username']),
-          );
+    if (this.currentUser()) {
+      if (!this.profile().following) {
+        this.profileService.followUser(this.profile().username).subscribe();
+        // TODO:
+        // this.getUser(this.route.snapshot.params['username']),
       } else {
-        this.profileService
-          .unfollowUser(this.profile()!.username)
-          .subscribe(() =>
-            this.getUser(this.route.snapshot.params['username']),
-          );
+        this.profileService.unfollowUser(this.profile().username).subscribe();
+        // TODO:
+        // this.getUser(this.route.snapshot.params['username']),
       }
     }
   }
