@@ -18,12 +18,11 @@ import { LoadingSpinner } from '../../shared/loading-spinner/loading-spinner';
   styleUrl: './login.scss',
 })
 export class Login {
-  private authService = inject(AuthService);
+  authService = inject(AuthService);
   authForm: FormGroup<AuthForm>;
   errorService = inject(ErrorService);
   router = inject(Router);
-
-  isLoading = signal(false);
+  errorMsg = signal<string>('');
 
   constructor() {
     this.authForm = new FormGroup<AuthForm>({
@@ -39,7 +38,6 @@ export class Login {
   }
 
   onSubmit() {
-    this.isLoading.set(true);
     this.authService
       .login({
         email: this.authForm.value.email!,
@@ -47,12 +45,10 @@ export class Login {
       })
       .subscribe({
         next: () => {
-          this.isLoading.set(false);
           this.router.navigate(['/']);
         },
         error: (error) => {
-          this.isLoading.set(false);
-          this.errorService.handleError(error);
+          this.errorMsg.set(error);
         },
       });
   }

@@ -26,6 +26,10 @@ export const appConfig: ApplicationConfig = {
       withFetch(),
     ),
     provideAnimations(),
-    provideToastr(),
+    provideToastr({
+      timeOut: 3000,
+      positionClass: 'toast-bottom-right',
+      preventDuplicates: true,
+    }),
   ],
 };

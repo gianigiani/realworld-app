@@ -1,6 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { throwError } from 'rxjs';
 import { ToastService } from '../../../shared/toast/toast.service';
 
 @Injectable({
@@ -9,20 +8,30 @@ import { ToastService } from '../../../shared/toast/toast.service';
 export class ErrorService {
   toastService = inject(ToastService);
 
-  handleError(errorRes: HttpErrorResponse) {
-    let errorMsg = 'Operation failed. Please try again.';
-
-    if (errorRes.error && errorRes.error.message) {
-      errorMsg = errorRes.error.message;
+  setErrorMssage(err: HttpErrorResponse): string {
+    let errorMessage = '';
+    if (err) {
+      if (err.error instanceof ErrorEvent) {
+        errorMessage = `An error occured: ${err.error.message}`;
+      } else {
+        const status = err.status;
+        if (status === 401) {
+          errorMessage = 'You are not authorized to access this data.';
+        }
+        if (status === 404) {
+          errorMessage = 'Data was not found. Try again later.';
+        }
+        if (status === 422) {
+          errorMessage = 'Invalid email or password.';
+        }
+        if (status > 500 && status < 600) {
+          errorMessage =
+            "The server isnt't curently working. Please try again later.";
+        }
+      }
+      this.toastService.showError(errorMessage);
     }
 
-    if (errorRes.error && errorRes.error.errors.body[0]) {
-      errorMsg = errorRes.error.errors.body[0];
-    }
-
-    return throwError(() => {
-      this.toastService.showError(errorMsg);
-      return new Error(errorMsg);
-    });
+    return errorMessage;
   }
 }

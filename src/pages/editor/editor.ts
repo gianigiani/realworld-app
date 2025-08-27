@@ -22,6 +22,7 @@ export class Editor {
   private articleService = inject(ArticleService);
   private router = inject(Router);
   errorService = inject(ErrorService);
+  errorMsg = signal<string>('');
 
   articleForm: FormGroup<ArticleForm> = new FormGroup<ArticleForm>({
     title: new FormControl('', {
@@ -70,7 +71,7 @@ export class Editor {
           this.router.navigate(['/article/', article.slug]);
         },
         error: (error) => {
-          this.errorService.handleError(error);
+          this.errorMsg.set(error);
         },
       });
     }

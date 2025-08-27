@@ -33,6 +33,7 @@ export class ArticleComponent {
   article = signal<Article | null>(null);
   comments = signal<Comment[]>([]);
   isUser = signal<boolean>(false);
+  errorMsg = signal<string>('');
 
   username = this.store.currentUser()?.username;
 
@@ -90,7 +91,7 @@ export class ArticleComponent {
         this.commentForm.reset();
       },
       error: (error) => {
-        this.errorService.handleError(error);
+        this.errorMsg.set(error);
       },
     });
   }

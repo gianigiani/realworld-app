@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { catchError, map } from 'rxjs';
+import { catchError, map, throwError } from 'rxjs';
 import { ErrorService } from '../../errors/service/error.service';
 
 @Injectable({
@@ -13,9 +13,10 @@ export class TagsService {
   getAllTags() {
     return this.http.get<{ tags: string[] }>('/tags').pipe(
       map((data) => data.tags),
-      catchError((errorRes: HttpErrorResponse) =>
-        this.errorService.handleError(errorRes),
-      ),
+      catchError((errorRes: HttpErrorResponse) => {
+        this.errorService.setErrorMssage(errorRes);
+        return throwError(() => errorRes);
+      }),
     );
   }
 }

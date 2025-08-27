@@ -7,7 +7,7 @@
           <a href="/login">Have an account?</a>
         </p>
 
-        @if (isLoading()) {
+        @if (authService.isLoading()) {
           <div class="text-xs-center">
             <app-loading-spinner></app-loading-spinner>
           </div>

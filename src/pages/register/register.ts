@@ -18,11 +18,11 @@ import { LoadingSpinner } from '../../shared/loading-spinner/loading-spinner';
   styleUrl: './register.scss',
 })
 export class Register {
-  private authService = inject(AuthService);
+  authService = inject(AuthService);
   authForm: FormGroup<AuthForm>;
   errorService = inject(ErrorService);
   router = inject(Router);
-  isLoading = signal(false);
+  errorMsg = signal<string>('');
 
   constructor() {
     this.authForm = new FormGroup<AuthForm>({
@@ -42,7 +42,6 @@ export class Register {
   }
 
   onSubmit() {
-    this.isLoading.set(true);
     this.authService
       .register({
         username: this.authForm.value.username!,
@@ -51,13 +50,10 @@ export class Register {
       })
       .subscribe({
         next: () => {
-          this.isLoading.set(false);
           this.router.navigate(['/']);
         },
-
         error: (error) => {
-          this.isLoading.set(false);
-          this.errorService.handleError(error);
+          this.errorMsg.set(error);
         },
       });
   }
