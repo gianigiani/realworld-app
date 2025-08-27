@@ -57,7 +57,7 @@ export class AuthService {
 
   // get resources
   getCurrentUserResource = httpResource<{ user: User }>(() =>
-    this.tokenService.token() ? `/user/dw` : undefined,
+    this.tokenService.token() ? `/user` : undefined,
   );
 
   //register new user
