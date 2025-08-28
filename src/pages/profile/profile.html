@@ -12,10 +12,11 @@
             <button
               class="btn btn-sm btn-outline-secondary action-btn"
               (click)="toggleFollowing()"
+              [disabled]="isLoadingFollow()"
             >
               <i class="ion-plus-round"></i>
               &nbsp;
-              {{ profile().following ? "Unfollow" : "Follow" }}
+              {{ isFollowing() ? "Unfollow" : "Follow" }}
               {{ profile().username }}
             </button>
           }
