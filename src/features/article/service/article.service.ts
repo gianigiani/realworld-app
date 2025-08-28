@@ -18,8 +18,9 @@ export class ArticleService {
   type = signal<string>('global');
 
   getArticles(type: Signal<string>) {
-    return httpResource<{ articles: Article[] }>(() =>
-      type() !== 'global' ? `/articles/feed` : `/articles`,
+    return httpResource<{ articles: Article[] }>(
+      () => (type() !== 'global' ? `/articles/feed` : `/articles`),
+      //TODO: is this corect?
     );
   }
 

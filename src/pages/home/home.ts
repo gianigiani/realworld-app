@@ -23,7 +23,6 @@ export class Home {
   errorService = inject(ErrorService);
   private authService = inject(AuthService);
 
-  tags = signal<string[]>([]);
   type = signal<string>('global');
 
   articles = computed(() => this.articlesResource.value()?.articles ?? []);
@@ -34,18 +33,12 @@ export class Home {
     () => this.authService.getCurrentUserResource.value()?.user,
   );
 
+  tags = computed(() => this.tagsService.tags());
+
   currentPage = signal(1);
   pageSize = signal(5);
 
   articlesResource = this.articleService.getArticles(this.type);
-
-  constructor() {
-    this.tagsService.getAllTags().subscribe((result: string[]) => {
-      this.tags.set(result);
-    });
-
-    this.populateGlobalArticles();
-  }
 
   populateGlobalArticles() {
     this.type.set('global');
