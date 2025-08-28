@@ -1,5 +1,9 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  httpResource,
+} from '@angular/common/http';
+import { inject, Injectable, Signal, signal } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { ErrorService } from '../../errors/service/error.service';
 import { Article } from '../model/article.model';
@@ -11,23 +15,11 @@ export class ArticleService {
   private http = inject(HttpClient);
   private errorService = inject(ErrorService);
 
-  getAllArticles(): Observable<Article[]> {
-    return this.http.get<{ articles: Article[] }>('/articles').pipe(
-      map((data) => data.articles),
-      catchError((errorRes: HttpErrorResponse) => {
-        this.errorService.setErrorMssage(errorRes);
-        return throwError(() => errorRes);
-      }),
-    );
-  }
+  type = signal<string>('global');
 
-  getFeedArticles(): Observable<Article[]> {
-    return this.http.get<{ articles: Article[] }>('/articles/feed').pipe(
-      map((data) => data.articles),
-      catchError((errorRes: HttpErrorResponse) => {
-        this.errorService.setErrorMssage(errorRes);
-        return throwError(() => errorRes);
-      }),
+  getArticles(type: Signal<string>) {
+    return httpResource<{ articles: Article[] }>(() =>
+      type() !== 'global' ? `/articles/feed` : `/articles`,
     );
   }
 

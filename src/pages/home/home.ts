@@ -1,10 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, computed, inject, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { ArticlesList } from '../../entities/article/articles-list/articles-list';
-import { Article } from '../../features/article/model/article.model';
 import { ArticleService } from '../../features/article/service/article.service';
+import { AuthService } from '../../features/auth/service/auth.service';
 import { authStore } from '../../features/auth/store/auth.store';
+import { ErrorService } from '../../features/errors/service/error.service';
 import { TagsService } from '../../features/tags/service/tags.service';
 
 @Component({
@@ -18,13 +20,24 @@ export class Home {
   articleService = inject(ArticleService);
   store = inject(authStore);
   router = inject(Router);
+  errorService = inject(ErrorService);
+  private authService = inject(AuthService);
 
   tags = signal<string[]>([]);
-  articles = signal<Article[]>([]);
   type = signal<string>('global');
+
+  articles = computed(() => this.articlesResource.value()?.articles ?? []);
+  error = computed(() => this.articlesResource.error() as HttpErrorResponse);
+  errorMsg = computed(() => this.errorService.setErrorMssage(this.error()));
+  isLoading = computed(() => this.articlesResource.isLoading());
+  private user = computed(
+    () => this.authService.getCurrentUserResource.value()?.user,
+  );
 
   currentPage = signal(1);
   pageSize = signal(5);
+
+  articlesResource = this.articleService.getArticles(this.type);
 
   constructor() {
     this.tagsService.getAllTags().subscribe((result: string[]) => {
@@ -35,18 +48,12 @@ export class Home {
   }
 
   populateGlobalArticles() {
-    this.articleService.getAllArticles().subscribe((result: Article[]) => {
-      this.articles.set(result);
-      this.type.set('global');
-    });
+    this.type.set('global');
   }
 
   populateFeedArticles() {
-    if (this.store.isAuthenticated()) {
-      this.articleService.getFeedArticles().subscribe((result: Article[]) => {
-        this.articles.set(result);
-        this.type.set('feed');
-      });
+    if (this.user()) {
+      this.type.set('feed');
     } else {
       this.router.navigate(['/login']);
     }
