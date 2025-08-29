@@ -24,13 +24,9 @@ export class ArticleService {
     );
   }
 
-  getArticle(slug: string): Observable<Article> {
-    return this.http.get<{ article: Article }>(`/articles/${slug}`).pipe(
-      map((data) => data.article),
-      catchError((errorRes: HttpErrorResponse) => {
-        this.errorService.setErrorMssage(errorRes);
-        return throwError(() => errorRes);
-      }),
+  getArticle(slug: Signal<string>) {
+    return httpResource<{ article: Article }>(() =>
+      slug() ? `/articles/${slug()}` : undefined,
     );
   }
 

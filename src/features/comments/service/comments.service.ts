@@ -1,5 +1,9 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  httpResource,
+} from '@angular/common/http';
+import { inject, Injectable, Signal } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { ErrorService } from '../../errors/service/error.service';
 import { Comment } from '../model/comment.interface';
@@ -11,16 +15,10 @@ export class CommentsService {
   private http = inject(HttpClient);
   private errorService = inject(ErrorService);
 
-  getAllComments(slug: string): Observable<Comment[]> {
-    return this.http
-      .get<{ comments: Comment[] }>(`/articles/${slug}/comments`)
-      .pipe(
-        map((data) => data.comments),
-        catchError((errorRes: HttpErrorResponse) => {
-          this.errorService.setErrorMssage(errorRes);
-          return throwError(() => errorRes);
-        }),
-      );
+  getAllComments(slug: Signal<string>) {
+    return httpResource<{ comments: Comment[] }>(() =>
+      slug() ? `/articles/${slug()}/comments` : undefined,
+    );
   }
 
   createComment(slug: string, payload: string): Observable<Comment> {

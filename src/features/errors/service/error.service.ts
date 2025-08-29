@@ -24,6 +24,10 @@ export class ErrorService {
         if (status === 422) {
           errorMessage = 'Invalid email or password.';
         }
+        if (status === 502) {
+          errorMessage =
+            "The server isnt't curently working. Please try again later.";
+        }
         if (status > 500 && status < 600) {
           errorMessage =
             "The server isnt't curently working. Please try again later.";

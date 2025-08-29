@@ -1,21 +1,17 @@
 <div class="article-page">
   <div class="banner">
     <div class="container">
-      <h1>{{ article()?.title }}</h1>
+      <h1>{{ article().title }}</h1>
 
       <div class="article-meta">
-        <a [href]="'/profile/' + article()?.author?.username"
+        <a [href]="'/profile/' + article().author.username"
           ><img [alt]="" src="http://i.imgur.com/Qr71crq.jpg"
         /></a>
         <div class="info">
-          <a
-            [href]="'/profile/' + article()?.author?.username"
-            class="author"
-            >{{ article()?.author?.username }}</a
-          >
-          <span class="date">{{
-            article()?.createdAt | date: "longDate"
-          }}</span>
+          <a [href]="'/profile/' + article().author.username" class="author">{{
+            article().author.username
+          }}</a>
+          <span class="date">{{ article().createdAt | date: "longDate" }}</span>
         </div>
         @if (!isUser()) {
           <button
@@ -24,14 +20,14 @@
           >
             <i class="ion-plus-round"></i>
             &nbsp;
-            {{ article()?.author?.following ? "Unfollow" : "Follow" }}
-            {{ article()?.author?.username }} <span class="counter">(10)</span>
+            {{ article().author.following ? "Unfollow" : "Follow" }}
+            {{ article().author.username }} <span class="counter">(10)</span>
           </button>
           &nbsp;&nbsp;
           <button class="btn btn-sm btn-outline-primary">
             <i class="ion-heart"></i>
             &nbsp; Favorite Post
-            <span class="counter">{{ article()?.favoritesCount }}</span>
+            <span class="counter">{{ article().favoritesCount }}</span>
           </button>
         }
         @if (isUser()) {
@@ -49,7 +45,7 @@
   <div class="container page">
     <div class="row article-content">
       <div class="col-md-12">
-        <div [innerHTML]="article()?.body"></div>
+        <div [innerHTML]="article().body"></div>
         <!-- <p>
           Web development technologies have evolved at an incredible clip over
           the past few years.
@@ -71,10 +67,8 @@
           ><img [alt]="" src="http://i.imgur.com/Qr71crq.jpg"
         /></a>
         <div class="info">
-          <a href="" class="author">{{ article()?.author?.username }}</a>
-          <span class="date">{{
-            article()?.createdAt | date: "longDate"
-          }}</span>
+          <a href="" class="author">{{ article().author.username }}</a>
+          <span class="date">{{ article().createdAt | date: "longDate" }}</span>
         </div>
         @if (!isUser()) {
           <button
@@ -83,14 +77,14 @@
           >
             <i class="ion-plus-round"></i>
             &nbsp;
-            {{ article()?.author?.following ? "Unfollow" : "Follow" }}
-            {{ article()?.author?.username }}
+            {{ article().author.following ? "Unfollow" : "Follow" }}
+            {{ article().author.username }}
           </button>
           &nbsp;
           <button class="btn btn-sm btn-outline-primary">
             <i class="ion-heart"></i>
             &nbsp; Favorite Article
-            <span class="counter">{{ article()?.favoritesCount }}</span>
+            <span class="counter">{{ article().favoritesCount }}</span>
           </button>
         }
         @if (isUser()) {

@@ -1,13 +1,6 @@
-import {
-  Component,
-  computed,
-  DestroyRef,
-  effect,
-  inject,
-  linkedSignal,
-  signal,
-} from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, computed, inject, linkedSignal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import {
   ActivatedRoute,
   Router,
@@ -15,9 +8,10 @@ import {
   RouterLinkActive,
   RouterOutlet,
 } from '@angular/router';
-import { EMPTY, map, of, switchMap } from 'rxjs';
+import { map } from 'rxjs';
 import { AuthService } from '../../features/auth/service/auth.service';
 import { authStore } from '../../features/auth/store/auth.store';
+import { ErrorService } from '../../features/errors/service/error.service';
 import { Profile } from '../../features/profile/model/profile.model';
 import { ProfileService } from '../../features/profile/profile.service';
 
@@ -33,7 +27,7 @@ export class ProfileComponent {
   route = inject(ActivatedRoute);
   private authService = inject(AuthService);
   private router = inject(Router);
-  destroyRef = inject(DestroyRef);
+  private errorService = inject(ErrorService);
 
   private currentUser = computed(
     () => this.authService.getCurrentUserResource.value()?.user.username,
@@ -42,58 +36,55 @@ export class ProfileComponent {
     this.route.params.pipe(map((params) => params['username'])),
     { initialValue: '' },
   );
-
   isUser = computed(() => this.username() === this.currentUser());
   profile = computed(
     () => this.profileResource.value()?.profile ?? ({} as Profile),
   );
-  profileResource = this.profileService.getProfile(this.username);
+  error = computed(() => this.profileResource.error() as HttpErrorResponse);
+  errorMsg = computed(() => this.errorService.setErrorMssage(this.error()));
 
-  // isFollowing = computed(() => this.profile().following);
-  follow = signal<boolean>(false);
-  isLoadingFollow = signal<boolean>(false);
+  profileResource = this.profileService.getProfile(this.username);
 
   isFollowing = linkedSignal({
     source: () => this.profile()?.following,
-    computation: (following) => !following,
+    computation: (following) => following,
   });
 
-  constructor() {
-    effect(() => {
-      const triggerValue = this.isLoadingFollow();
-      console.log(triggerValue);
-
-      if (triggerValue) {
-        this.profileResource = this.profileService.getProfile(this.username);
-      }
-    });
-  }
-
   toggleFollowing() {
-    this.isLoadingFollow.set(true);
-    const username = this.profile().username;
+    // TODO: with subscribe
+    const isFollowing = this.isFollowing();
+    const user = this.profile().username;
 
-    of(!!this.currentUser())
-      .pipe(
-        switchMap((isAuth: boolean) => {
-          if (!isAuth) {
-            void this.router.navigate(['/login']);
-            return EMPTY;
-          }
+    if (isFollowing) {
+      this.profileService.unfollowUser(user);
+    } else {
+      this.profileService.followUser(user);
+    }
+    this.isFollowing.set(!isFollowing);
 
-          if (!this.isFollowing()) {
-            return this.profileService.followUser(username);
-          } else {
-            return this.profileService.unfollowUser(username);
-          }
-        }),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe({
-        next: () => {
-          this.isLoadingFollow.set(false);
-        },
-        error: () => this.isLoadingFollow.set(false),
-      });
+    // this.isLoadingFollow.set(true);
+    // const username = this.profile().username;
+    // of(!!this.currentUser())
+    //   .pipe(
+    //     switchMap((isAuth: boolean) => {
+    //       if (!isAuth) {
+    //         void this.router.navigate(['/login']);
+    //         return EMPTY;
+    //       }
+    //       if (!this.isFollowing()) {
+    //         return this.profileService.followUser(username);
+    //       } else {
+    //         return this.profileService.unfollowUser(username);
+    //       }
+    //     }),
+    //     takeUntilDestroyed(this.destroyRef),
+    //   )
+    //   .subscribe({
+    //     next: () => {
+    //       // this.isLoadingFollow.set(false);
+    //     },
+    //     error: () => console.log("jnds");
+    //       //  this.isLoadingFollow.set(false),
+    //   });
   }
 }
