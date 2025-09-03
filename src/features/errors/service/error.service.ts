@@ -8,7 +8,7 @@ import { ToastService } from '../../../shared/toast/toast.service';
 export class ErrorService {
   toastService = inject(ToastService);
 
-  setErrorMssage(err: HttpErrorResponse): string {
+  setErrorMessage(err: HttpErrorResponse): string {
     let errorMessage = '';
     if (err) {
       if (err.error instanceof ErrorEvent) {

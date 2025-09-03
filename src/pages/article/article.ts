@@ -57,13 +57,13 @@ export class ArticleComponent {
     () => this.articleResource.error() as HttpErrorResponse,
   );
   errorMsgArticle = computed(() =>
-    this.errorService.setErrorMssage(this.errorArticle()),
+    this.errorService.setErrorMessage(this.errorArticle()),
   );
   errorComments = computed(
     () => this.commentsResource.error() as HttpErrorResponse,
   );
   errorMsgComments = computed(() =>
-    this.errorService.setErrorMssage(this.errorComments()),
+    this.errorService.setErrorMessage(this.errorComments()),
   );
 
   articleResource = this.articleService.getArticle(this.slug);
@@ -102,8 +102,8 @@ export class ArticleComponent {
         // this.getAllCommentsForArticle(slug);
         this.commentForm.reset();
       },
-      error: () => {
-        // this.errorMsg.set(error);
+      error: (error) => {
+        this.errorService.setErrorMessage(error);
       },
     });
   }

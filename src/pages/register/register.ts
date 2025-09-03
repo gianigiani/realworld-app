@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -22,7 +22,6 @@ export class Register {
   authForm: FormGroup<AuthForm>;
   errorService = inject(ErrorService);
   router = inject(Router);
-  errorMsg = signal<string>('');
 
   constructor() {
     this.authForm = new FormGroup<AuthForm>({
@@ -53,7 +52,7 @@ export class Register {
           this.router.navigate(['/']);
         },
         error: (error) => {
-          this.errorMsg.set(error);
+          this.errorService.setErrorMessage(error);
         },
       });
   }

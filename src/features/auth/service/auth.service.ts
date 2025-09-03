@@ -27,7 +27,7 @@ export class AuthService {
   error = computed(
     () => this.getCurrentUserResource.error() as HttpErrorResponse,
   );
-  errorMsg = computed(() => this.errorService.setErrorMssage(this.error()));
+  errorMsg = computed(() => this.errorService.setErrorMessage(this.error()));
   isLoading = computed(() => this.getCurrentUserResource.isLoading());
 
   constructor() {

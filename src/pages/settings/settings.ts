@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -21,7 +21,6 @@ export class Settings {
   private authService = inject(AuthService);
   router = inject(Router);
   errorService = inject(ErrorService);
-  errorMsg = signal<string>('');
 
   settingsForm: FormGroup<SettingsForm>;
 
@@ -67,7 +66,7 @@ export class Settings {
           this.router.navigate(['/profile/', user.username]);
         },
         error: (error) => {
-          this.errorMsg.set(error);
+          this.errorService.setErrorMessage(error);
         },
       });
   }

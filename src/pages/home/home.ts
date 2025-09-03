@@ -27,7 +27,7 @@ export class Home {
 
   articles = computed(() => this.articlesResource.value()?.articles ?? []);
   error = computed(() => this.articlesResource.error() as HttpErrorResponse);
-  errorMsg = computed(() => this.errorService.setErrorMssage(this.error()));
+  errorMsg = computed(() => this.errorService.setErrorMessage(this.error()));
   isLoading = computed(() => this.articlesResource.isLoading());
   private user = computed(
     () => this.authService.getCurrentUserResource.value()?.user,

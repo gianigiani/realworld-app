@@ -27,5 +27,3 @@ export class ProfileService {
       .pipe(map((data: { profile: Profile }) => data.profile));
   }
 }
-
-// this.errorService.setErrorMssage(errorRes);

@@ -12,5 +12,5 @@ export class TagsService {
 
   tags = computed(() => this.getAllTagResources.value()?.tags ?? []);
   error = computed(() => this.getAllTagResources.error() as HttpErrorResponse);
-  errorMsg = computed(() => this.errorService.setErrorMssage(this.error()));
+  errorMsg = computed(() => this.errorService.setErrorMessage(this.error()));
 }

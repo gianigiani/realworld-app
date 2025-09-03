@@ -41,7 +41,7 @@ export class ProfileComponent {
     () => this.profileResource.value()?.profile ?? ({} as Profile),
   );
   error = computed(() => this.profileResource.error() as HttpErrorResponse);
-  errorMsg = computed(() => this.errorService.setErrorMssage(this.error()));
+  errorMsg = computed(() => this.errorService.setErrorMessage(this.error()));
 
   profileResource = this.profileService.getProfile(this.username);
 
@@ -67,9 +67,10 @@ export class ProfileComponent {
       next: () => {
         this.isFollowing.set(!isFollowing);
       },
-      error: (error) => {
-        console.error('Failed to toggle follow status:', error);
-        //TODO:   this.errorService.setErrorMssage(errorRes);
+      error: () => {
+        // TODO: whats the best practice to handle errors here?
+        this.errorMsg();
+        // this.errorService.setErrorMessage(error);
       },
     });
   }
