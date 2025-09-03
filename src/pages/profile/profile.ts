@@ -51,40 +51,26 @@ export class ProfileComponent {
   });
 
   toggleFollowing() {
-    // TODO: with subscribe
     const isFollowing = this.isFollowing();
     const user = this.profile().username;
 
-    if (isFollowing) {
-      this.profileService.unfollowUser(user);
-    } else {
-      this.profileService.followUser(user);
+    if (!user) {
+      this.router.navigate(['/login']);
+      return;
     }
-    this.isFollowing.set(!isFollowing);
 
-    // this.isLoadingFollow.set(true);
-    // const username = this.profile().username;
-    // of(!!this.currentUser())
-    //   .pipe(
-    //     switchMap((isAuth: boolean) => {
-    //       if (!isAuth) {
-    //         void this.router.navigate(['/login']);
-    //         return EMPTY;
-    //       }
-    //       if (!this.isFollowing()) {
-    //         return this.profileService.followUser(username);
-    //       } else {
-    //         return this.profileService.unfollowUser(username);
-    //       }
-    //     }),
-    //     takeUntilDestroyed(this.destroyRef),
-    //   )
-    //   .subscribe({
-    //     next: () => {
-    //       // this.isLoadingFollow.set(false);
-    //     },
-    //     error: () => console.log("jnds");
-    //       //  this.isLoadingFollow.set(false),
-    //   });
+    const operation$ = isFollowing
+      ? this.profileService.unfollowUser(user)
+      : this.profileService.followUser(user);
+
+    operation$.subscribe({
+      next: () => {
+        this.isFollowing.set(!isFollowing);
+      },
+      error: (error) => {
+        console.error('Failed to toggle follow status:', error);
+        //TODO:   this.errorService.setErrorMssage(errorRes);
+      },
+    });
   }
 }
