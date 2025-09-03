@@ -1,10 +1,6 @@
-import {
-  HttpClient,
-  HttpErrorResponse,
-  httpResource,
-} from '@angular/common/http';
+import { HttpClient, httpResource } from '@angular/common/http';
 import { inject, Injectable, Signal } from '@angular/core';
-import { catchError, map, Observable, throwError } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { ErrorService } from '../../errors/service/error.service';
 import { Comment } from '../model/comment.interface';
 
@@ -26,12 +22,6 @@ export class CommentsService {
       .post<{ comment: Comment }>(`/articles/${slug}/comments`, {
         comment: { body: payload },
       })
-      .pipe(
-        map((data) => data.comment),
-        catchError((errorRes: HttpErrorResponse) => {
-          this.errorService.setErrorMssage(errorRes);
-          return throwError(() => errorRes);
-        }),
-      );
+      .pipe(map((data) => data.comment));
   }
 }

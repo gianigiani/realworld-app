@@ -5,7 +5,7 @@ import {
 } from '@angular/common/http';
 import { computed, effect, inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, Observable, tap, throwError } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { ToastService } from '../../../shared/toast/toast.service';
 import { ErrorService } from '../../errors/service/error.service';
 import { User } from '../model/user.interface';
@@ -72,10 +72,6 @@ export class AuthService {
         this.store.signIn(user);
         this.toastService.showSuccess("You're in!");
       }),
-      catchError((errorRes: HttpErrorResponse) => {
-        this.errorService.setErrorMssage(errorRes);
-        return throwError(() => errorRes);
-      }),
     );
   }
 
@@ -86,12 +82,6 @@ export class AuthService {
         this.tokenService.set(user.token);
         this.store.signIn(user);
         this.toastService.showSuccess("You're in!");
-      }),
-      catchError((errorRes: HttpErrorResponse) => {
-        // this.errorService.setErrorMssage(errorRes);
-        // this.errorMsg();
-        this.errorService.setErrorMssage(this.error());
-        return throwError(() => errorRes);
       }),
     );
   }
@@ -108,10 +98,6 @@ export class AuthService {
         this.tokenService.set(user.token);
         this.store.signIn(user);
         this.toastService.showSuccess('Changes saved!');
-      }),
-      catchError((errorRes: HttpErrorResponse) => {
-        this.errorService.setErrorMssage(errorRes);
-        return throwError(() => errorRes);
       }),
     );
   }
