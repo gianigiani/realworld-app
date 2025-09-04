@@ -16,7 +16,9 @@
                 <a
                   class="nav-link"
                   href="#"
-                  [ngClass]="{ active: this.type() !== 'global' }"
+                  [ngClass]="{
+                    active: this.articleService.type() !== 'global',
+                  }"
                   (click)="populateFeedArticles()"
                   >Your Feed</a
                 >
@@ -26,7 +28,7 @@
               <a
                 class="nav-link"
                 href="#"
-                [ngClass]="{ active: this.type() === 'global' }"
+                [ngClass]="{ active: this.articleService.type() === 'global' }"
                 (click)="populateGlobalArticles()"
                 >Global Feed</a
               >
@@ -35,7 +37,7 @@
         </div>
 
         <!-- article list with article and pagination-->
-        <app-articles-list [articles]="articles()"></app-articles-list>
+        <app-articles-list></app-articles-list>
       </div>
 
       <!-- tags -->
