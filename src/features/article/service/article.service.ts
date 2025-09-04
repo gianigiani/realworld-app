@@ -35,13 +35,15 @@ export class ArticleService {
       .pipe(map((data) => data.article));
   }
 
-  // favoriteArticle(slug: string): Observable<Article> {
-  //   return this.http
-  //     .post<{
-  //       article: Article;
-  //     }>(`/articles/${slug}/favorite`)
-  //     .pipe(
-  //       map((data) => data.article),
-  //     );
-  // }
+  favoriteArticle(slug: string): Observable<Article> {
+    return this.http
+      .post<{ article: Article }>(`/articles/${slug}/favorite`, {})
+      .pipe(map((data) => data.article));
+  }
+
+  unfavoriteArticle(slug: string): Observable<Article> {
+    return this.http
+      .delete<{ article: Article }>(`/articles/${slug}/favorite`)
+      .pipe(map((data) => data.article));
+  }
 }

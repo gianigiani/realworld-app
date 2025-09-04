@@ -66,8 +66,8 @@ export class ProfileComponent {
       : this.profileService.followUser(user);
 
     operation$.subscribe({
-      next: () => {
-        this.isFollowing.set(!isFollowing);
+      next: (updatedProfile) => {
+        this.isFollowing.set(updatedProfile.following);
       },
       error: () => {
         // TODO: whats the best practice to handle errors here?
