@@ -27,6 +27,7 @@ export class Home {
     () => this.authService.getCurrentUserResource.value()?.user,
   );
   tags = computed(() => this.tagsService.tags());
+  isTagsLoading = computed(() => this.tagsService.isLoading());
 
   populateGlobalArticles() {
     this.articleService.type.set('global');

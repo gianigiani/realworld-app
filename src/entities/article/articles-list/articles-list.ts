@@ -2,12 +2,13 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, signal } from '@angular/core';
 import { ArticleService } from '../../../features/article/service/article.service';
 import { ErrorService } from '../../../features/errors/service/error.service';
+import { LoadingSpinner } from '../../../shared/loading-spinner/loading-spinner';
 import { PaginationService } from '../../../shared/pagination-service/pagination.service';
 import { ArticlePreview } from '../article-preview/article-preview';
 
 @Component({
   selector: 'app-articles-list',
-  imports: [ArticlePreview],
+  imports: [ArticlePreview, LoadingSpinner],
   templateUrl: './articles-list.html',
   styleUrl: './articles-list.scss',
 })

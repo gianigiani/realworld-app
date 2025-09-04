@@ -1,6 +1,13 @@
-<div>
+<div class="position-relative">
+  @if (isLoading()) {
+    <div class="loading-backdrop">
+      <app-loading-spinner></app-loading-spinner>
+    </div>
+  }
   @for (article of articles(); track article) {
-    <app-article-preview [article]="article"></app-article-preview>
+    <div [class.blur-overlay]="isLoading()">
+      <app-article-preview [article]="article"></app-article-preview>
+    </div>
   } @empty {
     <div class="article-preview">There are no articles here yet</div>
   }
@@ -8,7 +15,7 @@
   <!-- pagination -->
   <nav class="text-xs-center">
     @if (articles().length > 0) {
-      <ul class="pagination">
+      <ul class="pagination" [class.blur-overlay]="isLoading()">
         <li class="page-item" [class.disabled]="currentPage() === 1">
           <button
             type="button"

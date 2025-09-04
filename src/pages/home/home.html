@@ -42,12 +42,17 @@
 
       <!-- tags -->
       <div class="col-md-3">
-        <div class="sidebar">
+        <div class="sidebar position-relative">
+          @if (isTagsLoading()) {
+            <div class="loading-backdrop">
+              <app-loading-spinner></app-loading-spinner>
+            </div>
+          }
           <p>Popular Tags</p>
 
           @if (tags()) {
             @for (tag of tags(); track tag) {
-              <div class="tag-list">
+              <div class="tag-list" [class.blur-overlay]="isTagsLoading()">
                 <a
                   [routerLink]="['/article', tag]"
                   class="tag-pill tag-default"
