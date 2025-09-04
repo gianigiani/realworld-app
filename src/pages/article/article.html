@@ -4,12 +4,12 @@
       <h1>{{ article().title }}</h1>
 
       <div class="article-meta">
-        <a [href]="'/profile/' + article().author.username"
+        <a [href]="'/profile/' + articleUser()"
           ><img [alt]="" src="http://i.imgur.com/Qr71crq.jpg"
         /></a>
         <div class="info">
-          <a [href]="'/profile/' + article().author.username" class="author">{{
-            article().author.username
+          <a [href]="'/profile/' + articleUser()" class="author">{{
+            articleUser()
           }}</a>
           <span class="date">{{ article().createdAt | date: "longDate" }}</span>
         </div>
@@ -20,8 +20,8 @@
           >
             <i class="ion-plus-round"></i>
             &nbsp;
-            {{ article().author.following ? "Unfollow" : "Follow" }}
-            {{ article().author.username }} <span class="counter">(10)</span>
+            {{ isFollowing() ? "Unfollow" : "Follow" }}
+            {{ articleUser() }} <span class="counter">(10)</span>
           </button>
           &nbsp;&nbsp;
           <button class="btn btn-sm btn-outline-primary">
@@ -67,7 +67,7 @@
           ><img [alt]="" src="http://i.imgur.com/Qr71crq.jpg"
         /></a>
         <div class="info">
-          <a href="" class="author">{{ article().author.username }}</a>
+          <a href="" class="author">{{ articleUser() }}</a>
           <span class="date">{{ article().createdAt | date: "longDate" }}</span>
         </div>
         @if (!isUser()) {
@@ -77,8 +77,8 @@
           >
             <i class="ion-plus-round"></i>
             &nbsp;
-            {{ article().author.following ? "Unfollow" : "Follow" }}
-            {{ article().author.username }}
+            {{ isFollowing() ? "Unfollow" : "Follow" }}
+            {{ articleUser() }}
           </button>
           &nbsp;
           <button class="btn btn-sm btn-outline-primary">

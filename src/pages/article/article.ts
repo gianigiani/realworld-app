@@ -8,13 +8,12 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
 import { CommentComponent } from '../../entities/comment/comment';
 import { Article } from '../../features/article/model/article.model';
 import { ArticleService } from '../../features/article/service/article.service';
 import { AuthService } from '../../features/auth/service/auth.service';
-import { authStore } from '../../features/auth/store/auth.store';
 import { Comment } from '../../features/comments/model/comment.interface';
 import { CommentsService } from '../../features/comments/service/comments.service';
 import { ErrorService } from '../../features/errors/service/error.service';
@@ -30,10 +29,10 @@ export class ArticleComponent {
   private articleService = inject(ArticleService);
   private commentsService = inject(CommentsService);
   private route = inject(ActivatedRoute);
-  private store = inject(authStore);
   private profileService = inject(ProfileService);
   private errorService = inject(ErrorService);
   private authService = inject(AuthService);
+  private router = inject(Router);
 
   private currentUser = computed(
     () => this.authService.getCurrentUserResource.value()?.user.username,
@@ -41,6 +40,11 @@ export class ArticleComponent {
   private username = computed(
     () => this.articleResource.value()?.article.author.username ?? '',
   );
+  articleUser = computed(() => this.username());
+  isFollowing = computed(
+    () => this.articleResource.value()?.article.author.following,
+  );
+
   isUser = computed(() => this.username() === this.currentUser());
 
   private slug = toSignal(
@@ -77,19 +81,27 @@ export class ArticleComponent {
   });
 
   toggleFollowing() {
-    if (this.store.isAuthenticated()) {
-      if (!this.article()!.author.following) {
-        this.profileService.followUser(this.article()!.author.username);
-        // .subscribe
-        // () => this.getArticle(this.route.snapshot.params['slug'])
-        // ();
-      } else {
-        this.profileService.unfollowUser(this.article()!.author.username);
-        // .subscribe
-        // () => this.getArticle(this.route.snapshot.params['slug'])
-        // ();
-      }
+    const user = this.article().author.username;
+    const isFollowing = this.article().author.following;
+
+    if (!user) {
+      this.router.navigate(['/login']);
+      return;
     }
+
+    const operation$ = isFollowing
+      ? this.profileService.unfollowUser(user)
+      : this.profileService.followUser(user);
+
+    operation$.subscribe({
+      next: () => {
+        // TODO: is reload a goot method?
+        this.articleResource.reload();
+      },
+      error: (error) => {
+        this.errorService.setErrorMessage(error);
+      },
+    });
   }
 
   addComment() {
@@ -98,9 +110,9 @@ export class ArticleComponent {
 
     this.commentsService.createComment(slug, controlCommentValue).subscribe({
       next: () => {
-        // TODO: get all comments again
-        // this.getAllCommentsForArticle(slug);
         this.commentForm.reset();
+        // TODO: is reload a goot method?
+        this.commentsResource.reload();
       },
       error: (error) => {
         this.errorService.setErrorMessage(error);
