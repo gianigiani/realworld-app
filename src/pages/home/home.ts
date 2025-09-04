@@ -7,10 +7,11 @@ import { AuthService } from '../../features/auth/service/auth.service';
 import { authStore } from '../../features/auth/store/auth.store';
 import { ErrorService } from '../../features/errors/service/error.service';
 import { TagsService } from '../../features/tags/service/tags.service';
+import { LoadingSpinner } from '../../shared/loading-spinner/loading-spinner';
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, RouterModule, ArticlesList],
+  imports: [CommonModule, RouterModule, ArticlesList, LoadingSpinner],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })

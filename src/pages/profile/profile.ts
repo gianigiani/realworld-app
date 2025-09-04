@@ -14,10 +14,11 @@ import { authStore } from '../../features/auth/store/auth.store';
 import { ErrorService } from '../../features/errors/service/error.service';
 import { Profile } from '../../features/profile/model/profile.model';
 import { ProfileService } from '../../features/profile/profile.service';
+import { LoadingSpinner } from '../../shared/loading-spinner/loading-spinner';
 
 @Component({
   selector: 'app-profile',
-  imports: [RouterLink, RouterLinkActive, RouterOutlet],
+  imports: [RouterLink, RouterLinkActive, RouterOutlet, LoadingSpinner],
   templateUrl: './profile.html',
   styleUrl: './profile.scss',
 })
@@ -42,6 +43,7 @@ export class ProfileComponent {
   );
   error = computed(() => this.profileResource.error() as HttpErrorResponse);
   errorMsg = computed(() => this.errorService.setErrorMessage(this.error()));
+  isLoading = computed(() => this.profileResource.isLoading());
 
   profileResource = this.profileService.getProfile(this.username);
 
