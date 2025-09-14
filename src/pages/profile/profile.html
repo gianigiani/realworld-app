@@ -48,6 +48,7 @@
                 routerLinkActive="active"
                 [routerLinkActiveOptions]="{ exact: true }"
                 [routerLink]="['/profile', profile().username]"
+                (click)="populateAuthorArticles()"
               >
                 My Posts
               </a>
@@ -58,6 +59,7 @@
                 routerLinkActive="active"
                 [routerLinkActiveOptions]="{ exact: true }"
                 [routerLink]="['/profile', profile().username, 'favorites']"
+                (click)="populateFavArticles()"
               >
                 Favorited Posts
               </a>

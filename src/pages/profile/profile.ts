@@ -9,6 +9,7 @@ import {
   RouterOutlet,
 } from '@angular/router';
 import { map } from 'rxjs';
+import { ArticleService } from '../../features/article/service/article.service';
 import { AuthService } from '../../features/auth/service/auth.service';
 import { authStore } from '../../features/auth/store/auth.store';
 import { ErrorService } from '../../features/errors/service/error.service';
@@ -29,6 +30,7 @@ export class ProfileComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
   private errorService = inject(ErrorService);
+  private articleService = inject(ArticleService);
 
   private currentUser = computed(
     () => this.authService.getCurrentUserResource.value()?.user.username,
@@ -51,6 +53,10 @@ export class ProfileComponent {
     source: () => this.profile()?.following,
     computation: (following) => following,
   });
+
+  constructor() {
+    this.populateAuthorArticles();
+  }
 
   toggleFollowing() {
     const isFollowing = this.isFollowing();
@@ -75,5 +81,21 @@ export class ProfileComponent {
         // this.errorService.setErrorMessage(error);
       },
     });
+  }
+
+  populateFavArticles() {
+    if (this.currentUser()) {
+      this.articleService.type.set('fav');
+    } else {
+      this.router.navigate(['/login']);
+    }
+  }
+
+  populateAuthorArticles() {
+    if (this.currentUser()) {
+      this.articleService.type.set('author');
+    } else {
+      this.router.navigate(['/login']);
+    }
   }
 }

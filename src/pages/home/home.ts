@@ -29,6 +29,10 @@ export class Home {
   tags = computed(() => this.tagsService.tags());
   isTagsLoading = computed(() => this.tagsService.isLoading());
 
+  constructor() {
+    this.populateGlobalArticles();
+  }
+
   populateGlobalArticles() {
     this.articleService.type.set('global');
   }

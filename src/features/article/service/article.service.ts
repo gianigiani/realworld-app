@@ -11,7 +11,11 @@ export class ArticleService {
 
   type = signal<string>('global');
 
-  getArticlePerPage(type: Signal<string>, page: Signal<number>) {
+  getArticlePerPage(
+    type: Signal<string>,
+    page: Signal<number>,
+    user: Signal<string>,
+  ) {
     return httpResource<{ articles: Article[]; articlesCount: number }>(() => {
       const limit = 5;
       const currentType = type();
@@ -19,7 +23,13 @@ export class ArticleService {
 
       return currentType === 'global'
         ? `/articles?offset=${offset}&limit=${limit}`
-        : `/articles/feed?offset=${offset}&limit=${limit}`;
+        : currentType === 'feed'
+          ? `/articles/feed?offset=${offset}&limit=${limit}`
+          : currentType === 'author'
+            ? `/articles?author=${user()}&offset=${offset}&limit=${limit}`
+            : currentType === 'fav'
+              ? `/articles?favorited=${user()}&offset=${offset}&limit=${limit}`
+              : undefined;
     });
   }
 

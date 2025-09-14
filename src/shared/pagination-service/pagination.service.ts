@@ -1,9 +1,18 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable, linkedSignal, signal } from '@angular/core';
+import { ArticleService } from '../../features/article/service/article.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PaginationService {
+  private articleService = inject(ArticleService);
+  // currentPage = signal(1);
+  currentPage = linkedSignal({
+    source: () => this.articleService.type(),
+    computation: () => 1,
+  });
+  pageSize = signal(5);
+
   calculateTotalPages = (totalArticles: number, pageSize: number): number => {
     return Math.ceil(totalArticles / pageSize);
   };

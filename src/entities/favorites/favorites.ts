@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
+import { ArticlesList } from '../article/articles-list/articles-list';
 
 @Component({
   selector: 'app-favorites',
-  imports: [],
+  imports: [ArticlesList],
   templateUrl: './favorites.html',
   styleUrl: './favorites.scss',
 })
-export class Favorites {
-  //we need a call for favourite articles and a filter for user/author
-}
+export class Favorites {}

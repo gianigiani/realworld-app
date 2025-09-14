@@ -95,7 +95,7 @@ export class ArticleComponent {
 
     operation$.subscribe({
       next: () => {
-        // TODO: is reload a goot method?
+        // TODO: is reload a good method?
         this.articleResource.reload();
       },
       error: (error) => {

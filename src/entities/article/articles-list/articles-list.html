@@ -13,42 +13,9 @@
   }
 
   <!-- pagination -->
-  <nav class="text-xs-center">
-    @if (articles().length > 0) {
-      <ul class="pagination" [class.blur-overlay]="isLoading()">
-        <li class="page-item" [class.disabled]="currentPage() === 1">
-          <button
-            type="button"
-            class="page-link"
-            (click)="goToPage(currentPage() - 1)"
-          >
-            &laquo;
-          </button>
-        </li>
-        <!-- Smart pagination pages -->
-        @for (page of getVisiblePages(); track $index) {
-          @if (page === "...") {
-            <li class="page-item disabled">
-              <span class="page-link">...</span>
-            </li>
-          } @else {
-            <li class="page-item" [class.active]="currentPage() === page">
-              <button type="button" class="page-link" (click)="goToPage(page)">
-                {{ page }}
-              </button>
-            </li>
-          }
-        }
-        <li class="page-item" [class.disabled]="currentPage() === totalPages()">
-          <button
-            type="button"
-            class="page-link"
-            (click)="goToPage(currentPage() + 1)"
-          >
-            &raquo;
-          </button>
-        </li>
-      </ul>
-    }
-  </nav>
+  <app-pagination
+    [articles]="articles()"
+    [isLoading]="isLoading()"
+    [articlesCount]="articlesCount()"
+  ></app-pagination>
 </div>
