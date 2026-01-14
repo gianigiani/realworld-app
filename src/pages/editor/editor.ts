@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, inject, signal } from '@angular/core';
 import {
   FormControl,
@@ -14,7 +14,7 @@ import { ErrorService } from '../../features/errors/service/error.service';
 
 @Component({
   selector: 'app-editor',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './editor.html',
   styleUrl: './editor.scss',
 })
