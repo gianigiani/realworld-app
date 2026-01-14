@@ -22,13 +22,13 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^20.2.1",
-    "@angular/common": "^20.1.0",
-    "@angular/compiler": "^20.1.0",
-    "@angular/core": "^20.1.0",
-    "@angular/forms": "^20.1.0",
-    "@angular/platform-browser": "^20.1.0",
-    "@angular/router": "^20.1.0",
+    "@angular/animations": "^20.3.16",
+    "@angular/common": "^20.3.16",
+    "@angular/compiler": "^20.3.16",
+    "@angular/core": "^20.3.16",
+    "@angular/forms": "^20.3.16",
+    "@angular/platform-browser": "^20.3.16",
+    "@angular/router": "^20.3.16",
     "@ngrx/signals": "^20.0.0-rc.0",
     "ngx-toastr": "^19.0.0",
     "rxjs": "~7.8.0",
@@ -36,9 +36,9 @@
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
-    "@angular/build": "^20.1.0",
-    "@angular/cli": "^20.1.0",
-    "@angular/compiler-cli": "^20.1.0",
+    "@angular/build": "^20.3.14",
+    "@angular/cli": "^20.3.14",
+    "@angular/compiler-cli": "^20.3.16",
     "@types/jasmine": "~5.1.0",
     "angular-eslint": "20.1.1",
     "eslint": "^9.29.0",
@@ -53,6 +53,6 @@
     "prettier": "^3.6.2",
     "pretty-quick": "^4.2.2",
     "typescript": "~5.8.2",
-    "typescript-eslint": "8.34.1"
+    "typescript-eslint": "^8.53.0"
   }
 }
